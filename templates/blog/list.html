@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load blog_tags %}
+{% block title %}博客列表{% endblock %}
+# 页面内容
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">博客列表</div>
+                        <div class="panel-body">
+                            {% for blog in blogs %}
+                                <div class="blog">
+                                    <h3><a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a></h3>
+                                    <div class="material__meta">
+                                      <span class="material__views"><i class="far fa-eye"></i> {{ blog.views }}</span>
+                                      <span class="material__num-comments"><i class="far fa-comment-alt"></i> 157</span>
+                                      <span class="material__pub-date"><i class="far fa-clock"></i> {{ blog.created_time|date:"Y-m-d" }}</span>
+                                    </div>
+                                    <p>{{ blog.content|truncatechars:50 }}</p>
+                                </div>
+                            {% empty %}
+                                <div class="blog">
+                                    <h3>暂无博客！</h3>
+                                </div>
+                            {% endfor %}
+                            <p>共{{ blogs|length }}篇博客</p>
+                        </div>
+                </div>
+            </div>
+            <div class="hidden-xs col-sm-4 col-md-3 col-lg-2">
+                <div class="widget widget-recent-posts">
+                    <h3 class="widget-title">最新文章</h3>
+                    {% get_recent_blogs as recent_blog_list %}
+                    <ul>
+                    {% for blog in recent_blog_list %}
+                        <li>
+                            <a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a>
+                        </li>
+                    {% empty %}
+                        暂无文章！
+                    {% endfor %}
+                    </ul>
+                </div>
+                <div class="widget widget-archives">
+                    <h3 class="widget-title">归档</h3>
+                    {% archives as date_list %}
+                    <ul>
+                        {% for date in date_list %}
+                        <li>
+                            <a href="{% url 'archives' date.year date.month %}">
+                                {{ date.year }} 年 {{ date.month }} 月
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="widget widget-category">
+                    <h3 class="widget-title">分类</h3>
+                    {% get_categories as category_list%}
+                    <ul>
+                        {% for category in category_list %}
+                        <li>
+                            <a href="{% url 'category' category.pk %}">{{ category.name }}<span class="post-count">（{{ category_list|length }}）</span></a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

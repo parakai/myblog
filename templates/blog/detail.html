@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ blog.title }}{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                  <div class="panel-heading">{{ blog.title }}</div>
+                  <div class="panel-body">
+                    {{ blog.content }}
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+{% endblock %}
