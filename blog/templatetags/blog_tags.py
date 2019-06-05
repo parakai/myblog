@@ -1,4 +1,5 @@
 from django import template
+from django.db.models.aggregates import Count
 
 from ..models import Blog, Category
 
@@ -17,4 +18,5 @@ def archives():
 
 @register.simple_tag()
 def get_categories():
-    return Category.objects.all()
+    return Category.objects.annotate(num_blogs=Count('blog')).filter(num_blogs__gt=0)
+    # return Category.objects.all()
