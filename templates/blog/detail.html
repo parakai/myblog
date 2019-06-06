@@ -10,7 +10,8 @@
                       <ul class="blog-desc">
                           <li>作者：{{ blog.author }}</li>
                           <li>分类：{{ blog.category }}</li>
-                          <li>发表日期：{{ blog.created_time|date:"Y-m-d H:n:s" }}</li>
+                          <li>发表日期：{{ blog.created_time|date:"Y-m-d H:i:s" }}</li>
+{#                          模板标签过滤器参考https://docs.djangoproject.com/en/2.2/ref/templates/builtins/#ref-templates-builtins-filters#}
                       </ul>
                       <div class="blog-content">{{ blog.content }}</div>
                       <div class="blog-more">
