@@ -20,3 +20,88 @@ ul.blog-desc li{
 div.blog-more{
     margin-top: 1em;
 }
+
+/**
+ * 5.0 - Widget
+ */
+
+.widget {
+    background: #fff;
+    padding: 10px 0 0;
+}
+
+.widget-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    padding: 10px 0 0;
+    font-weight: 400;
+}
+
+.widget-recent-posts ul {
+    margin: 0;
+    padding-left: 1em;
+}
+
+.widget-recent-posts ul li {
+    list-style-type: none;
+    position: relative;
+    line-height: 110%;
+    margin-bottom: 10px;
+}
+
+.widget-recent-posts ul li::before {
+    content: '\f3d3';
+    font-family: "Ionicons";
+    position: absolute;
+    left: -20px;
+    top: 1px;
+    font-size: 16px;
+    color: #000;
+}
+
+.widget-archives ul {
+
+    margin: 0;
+    padding-left: 1em;
+}
+
+.widget-archives ul li {
+    list-style-type: none;
+    position: relative;
+    line-height: 170%;
+    margin-bottom: 10px;
+}
+
+.widget-archives ul li::before {
+    content: '\f3f3';
+    font-family: "Ionicons";
+    position: absolute;
+    left: -20px;
+    top: 1px;
+    font-size: 16px;
+    color: #000;
+}
+
+.widget-category ul {
+
+    margin: 0;
+    padding-left: 1em;
+}
+
+.widget-category ul li {
+    list-style-type: none;
+    position: relative;
+    line-height: 170%;
+    margin-bottom: 10px;
+}
+
+.widget-category ul li::before {
+    content: '\f3fe';
+    font-family: "Ionicons";
+    position: absolute;
+    left: -20px;
+    top: 1px;
+    font-size: 18px;
+    color: #000;
+}
