@@ -14,6 +14,8 @@ def get_recent_blogs(num=5):
 @register.simple_tag()
 def archives():
     return Blog.objects.dates('created_time', 'month', order='DESC')
+    # return Blog.objects.extra(select={'created_time': "strftime('%%Y-%%m',created_time)"}).\
+    #     values('created_time').annotate(count=Count('created_time')).order_by()
 
 
 @register.simple_tag()

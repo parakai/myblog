@@ -60,7 +60,8 @@
                         {% for date in date_list %}
                         <li>
                             <a href="{% url 'archives' date.year date.month %}">
-                                {{ date.year }} 年 {{ date.month }} 月
+{#                                {{ date.year }} 年 {{ date.month }} 月#}
+                                {{ date|date:"Y 年 m 月" }}
                             </a>
                         </li>
                         {% endfor %}

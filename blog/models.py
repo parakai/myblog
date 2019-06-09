@@ -37,3 +37,9 @@ class Blog(models.Model):
 
     def __str__(self):
         return "<Blog: %s>" % self.title
+
+    def get_previous_blog(self):
+        return super.objects.filter(created_time__gt=self.created_time).last()
+
+    def get_next_blog(self):
+        return super.objects.filter(created_time__lt=self.created_time).first()
