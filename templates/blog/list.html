@@ -4,31 +4,94 @@
 # 页面内容
 {% block content %}
     <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
-                <div class="panel panel-default">
-                    <div class="panel-heading">博客列表</div>
-                        <div class="panel-body">
-                            {% for blog in blog_lists %}
-                                <div class="blog">
-                                    <h3><a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a></h3>
-                                    <div class="material__meta">
-                                      <span class="material__views"><i class="far fa-eye"></i> {{ blog.views }}</span>
-                                      <span class="material__num-comments"><i class="far fa-comment-alt"></i> 157</span>
-                                      <span class="material__pub-date"><i class="far fa-clock"></i> {{ blog.created_time|date:"Y-m-d" }}</span>
-                                    </div>
-                                    <p>{{ blog.content|striptags|truncatechars:50 }}</p>
-                                </div>
-                            {% empty %}
-                                <div class="blog">
-                                    <h3>暂无博客！</h3>
-                                </div>
-                            {% endfor %}
-                            <p>共{{ blogs|length }}篇博客</p>
+        <div class="col-md-9 col-xs-12">
+            {% for blog in blog_lists %}
+                <div class="blog-border">
+                    <div class="blog-item">
+                        <div class="blog-title">
+                            <a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a>
+{#                            <div class="entry-meta">#}
+{#                              <span class="material-views"><i class="far fa-eye"></i> {{ blog.views }}</span>#}
+{#                              <span class="material-num-comments"><i class="far fa-comment-alt"></i> 157</span>#}
+{#                              <span class="material-pub-date"><i class="far fa-clock"></i> {{ blog.created_time|date:"Y-m-d" }}</span>#}
+{#                            </div>#}
                         </div>
+                        <div class="blog-desc">
+                            {{ blog.content|striptags|truncatechars:200 }}
+                        </div>
+                        <div class="blog-tags">
+                            <ul>
+                                <li>
+                                    <span class="glyphicon glyphicon-time"></span>
+                                    <span>2019-03-28</span>
+                                </li>
+                        <li>
+                            阅读：1459
+                        </li>
+                        <li>
+                            评论：0
+                        </li>
+                        <li>
+                            <span class="glyphicon glyphicon-tag"></span>
+                            <a href="/blog/?tag=3">数据库</a>
+                        </li>
+                    </ul>
+                        </div>
+                    </div>
+            {% empty %}
+                <div class="blog">
+                    <h3>暂无博客！</h3>
                 </div>
+            {% endfor %}
+                </div>
+{#                {% if is_paginated %}#}
+{#                    <div class="pagination">#}
+{#                        {% if page_obj.has_previous %}#}
+{#                            <a href="?page={{ page_obj.previous_page_number }}">上一页</a>#}
+{#                        {% endif %}#}
+{#                            <span class="current">第{{ page_obj.number }}页 / 共 {{ paginator.num_pages }}页</span>#}
+{#                        {% if page_obj.has_next %}#}
+{#                            <a href="?page={{ page_obj.next_page_number }}">下一页</a>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+{#                {% endif %}#}
+                {% if is_paginated %}
+                    <div class="paginator">
+                        <ul class="pagination">
+                            <li>
+                                {% if first %}
+                                    <a href="?page=1" aria-label="Previous">1</a>
+                                {% endif %}
+                            </li>
+                            {% if left %}
+                            {% if left_has_more %}
+                                <li><span>...</span></li>
+                            {% endif %}
+                                {% for i in left %}
+                                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                {% endfor %}
+                            {% endif %}
+                            <li><a href="?page={{ page_obj.number }}" >{{ page_obj.number }}</a></li>
+                            {% if right %}
+                            {% for i in right %}
+                                <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% endfor %}
+                            {% if right_has_more %}
+                                <li><span>...</span></li>
+                            {% endif %}
+                              {% endif %}
+                              {% if last %}
+                                  <li><a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+                              {% endif %}
+                        </ul>
+                        <p>
+                            共有{{ paginator.count }}篇博客,
+                            当前第{{ page_obj.number }}页，共{{ paginator.num_pages }}页
+                        </p>
+                    </div>
+                {% endif %}
             </div>
-            <div class="hidden-xs col-sm-4 col-md-3 col-lg-2">
+        <div class="col-md-3 col-xs-12 blog-border">
                 <div class="widget widget-recent-posts">
                     <h3 class="widget-title">最新文章</h3>
                         {% get_recent_blogs as recent_blog_list %}
@@ -68,6 +131,5 @@
                     </ul>
                 </div>
             </div>
-        </div>
     </div>
 {% endblock %}

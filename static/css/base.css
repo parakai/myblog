@@ -1,9 +1,75 @@
+body,button, input, select, textarea,h1 ,h2, h3, h4, h5, h6,p,a,div {
+    font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
+}
+
+ul,ol{ list-style-type:none;}
+ul,ol,li{ padding:0;margin:0;}
+/*body{ padding-top: 70px;}*/
+
+.blog-border{ border: 1px #ccc solid; border-radius: 6px;}
+
+/*博文列表*/
+.blog-item{ clear:both; border-bottom: 1px solid #ddd; padding: 1.5em 1em 0.8em 1.5em;  overflow: hidden;}
+.blog-title{ margin-bottom: 0.5em; font-size: 115%; font-weight: bold;}
+.blog-desc{ color: #777; font-size: small;}
+.blog-tags{ font-size: 70%; color: #75878a; margin-top: 0.5em; display: inline-block; border-top: 1px #ddd solid;}
+.blog-tags li{  float: left;  padding-top: 0.5em; margin-right: 1em;}
+
+/*博文页面*/
+.blog_header{ overflow: hidden; padding: 1em 0em 0em 1em;}
+.blog_header h3{ margin-top:10px;}
+.blog_header h3{ color: #0d56a6;}
+.blog_header li{ float: left; padding-right: 0.7em; font-size: small;}
+
+.blog_content{ padding: 1em 1em 0;}
+.blog_content p{ text-indent: 2em; margin: 5px 0; line-height: 1.6; font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;}
+.blog_content .badge{ text-indent: 0;}
+.blog_content img{ display:block; height:auto; max-width:90%; margin-left:2em;}
+
+
+.blog-border {
+    border: 1px #ccc solid;
+    border-radius: 6px;
+}
+.side-list h4 {
+    padding-top: 0.8em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px #ccc solid;
+}
 *{
     margin: 0;
     padding: 0;
 }
 body{
     margin-top: 70px!important;
+}
+div.blog:not(:last-child){
+    margin-bottom: 2em;
+    padding-bottom: 1em;
+    border-bottom: 1px solid #eee;
+}
+div.blog h3 {
+    margin-top: 0.5em;
+}
+div.blog p.blog-info {
+    margin-bottom: 0;
+}
+div.paginator{
+    text-align: center;
+}
+.entry-title {
+    text-align: center;
+    font-size: 1.9em;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    padding: 10px 20px 0;
+}
+
+.entry-meta {
+    text-align: center;
+    /*color: #DDDDDD;*/
+    font-size: 13px;
+    margin-bottom: 30px;
 }
 .material__meta > span {
     font-size: 1.2rem;
@@ -20,7 +86,10 @@ ul.blog-desc li{
 div.blog-more{
     margin-top: 1em;
 }
-
+.blog_header {
+    overflow: hidden;
+    padding: 1em 0em 0em 1em;
+}
 /**
  * 5.0 - Widget
  */
