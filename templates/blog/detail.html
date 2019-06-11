@@ -15,7 +15,7 @@
                           <span class="clearfix"></span>
                           <ul>
                               <li>分类标签：<a href="{% url 'category' blog.category.pk %}">{{ blog.category }}</a></li>
-                              <li>阅读{{ blog.views }}</li>
+                              <li>阅读({{ blog.views }})</li>
                           </ul>
                       </div>
                   </div>
@@ -67,6 +67,44 @@
                     <li><a href="/blog/43" target="_blank">以图搜图(一)：Python实现dHash算法</a></li>
                 </ul>
             </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <div class="comment-area">
+                    <h3 class="comment-title">提交评论</h3>
+                    {% if user.is_authenticated %}
+                        {{ user.username }}，欢迎评论~
+                        <form action="{% url 'update_comment' %}" method="post">
+                            {% csrf_token %}
+                            <textarea name="comment_text" id="comment_text"></textarea>
+                            <input type="hidden" name="object_id" value="{{ blog.pk }}">
+                            <input type="hidden" name="content_type" value="blog">
+                            <input type="submit" value="评论">
+                        </form>
+                    {% else %}
+                        未登录,登录之后才能评论
+                        <form action="{% url 'login' %}" method="post">
+                        {% csrf_token %}
+                            <span>用户名：</span>
+                            <input type="text" name="username">
+                            <span>密码：</span>
+                            <input type="password" name="password">
+                            <input type="submit" value="登录">
+                        </form>
+                    {% endif %}
+                </div>
+                <div class="comment-area">
+                    <h3 class="comment-title">评论列表</h3>
+                    {% for comment in comments %}
+                        <div>
+                            {{ comment.user.username }}
+                            ({{ comment.comment_time|date:"Y-m-d H:i:s" }}):
+                            {{ comment.text }}
+                        </div>
+                    {% empty %}
+                        暂无评论
+                    {% endfor %}
             </div>
         </div>
     </div>

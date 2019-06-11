@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from ckeditor_uploader.fields import RichTextUploadingField
+
+from comment.models import Comment
 
 
 class Category(models.Model):
@@ -43,3 +46,9 @@ class Blog(models.Model):
 
     def get_next_blog(self):
         return self.__class__.objects.filter(created_time__lt=self.created_time).first()
+
+    def get_comments(self):
+        blog_content_type = ContentType.objects.get_for_model(self)
+        comments = Comment.objects.filter(content_type=blog_content_type, object_id=self.pk)
+        return comments
+

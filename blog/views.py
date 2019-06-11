@@ -28,6 +28,32 @@ class IndexView(ListView):
     def pagination_data(self, paginator, page, is_paginated):
         if not is_paginated:
             return {}
+        # 获得用户当前请求的页码号
+        page_number = page.number
+        # 获得分页后的总页数
+        total_pages = paginator.num_pages
+        # 获取当前页码前后各2页的页码范围
+        page_range = list(range(max(page_number-2, 1), page_number)) + \
+                     list(range(page_number, min(page_number+2, total_pages)+1))
+        # 加上省略页码标记
+        if page_range[0] - 1 >= 2:
+            page_range.insert(0, '...')
+        if paginator.num_pages - page_range[-1] >= 2:
+            page_range.append('...')
+
+        # 加上首页和尾页
+        if page_range[0] != 1:
+            page_range.insert(0, 1)
+        if page_range[-1] != paginator.num_pages:
+            page_range.append(paginator.num_pages)
+        data = {
+            'page_range': page_range
+        }
+        return data
+
+    def pagination_data2(self, paginator, page, is_paginated):
+        if not is_paginated:
+            return {}
         # 当前页左边连续的页码号，初始值为空
         left = []
         # 当前页右边连续的页码号，初始值为空
@@ -124,6 +150,7 @@ class BlogDetailView(DetailView):
         if not request.COOKIES.get('blog_%s_readed' % self.kwargs.get('pk')):
             self.object.views += 1
             self.object.save()
+        response.set_cookie('blog_%s_readed' % self.kwargs.get('pk'), 'true')
         return response
 
     def get_object(self, queryset=None):
@@ -139,9 +166,11 @@ class BlogDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         previous_blog = self.object.get_previous_blog()
         next_blog = self.object.get_next_blog()
+        comments = self.object.get_comments()
         context.update({
             'previous_blog': previous_blog,
-            'next_blog': next_blog
+            'next_blog': next_blog,
+            'comments': comments,
         })
         return context
 
