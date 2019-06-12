@@ -11,7 +11,10 @@ class Comment(models.Model):
 
     text = models.TextField()
     comment_time = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, related_name="comments", on_delete=models.DO_NOTHING)
+
+    parent = models.ForeignKey('self', null=True, on_delete=models.DO_NOTHING)
+    reply_to = models.ForeignKey(User, related_name="replies", null=True, on_delete=models.DO_NOTHING)
 
     class Meta:
         ordering = ['-comment_time']

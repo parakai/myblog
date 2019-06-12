@@ -40,6 +40,9 @@ h3.comment-title{
     border-bottom: 1px solid #ccc;
     padding-bottom: 0.5em;
 }
+div.django-ckeditor-widget{
+    width: 100%;
+}
 
 /*.blog-border {*/
 /*    border: 1px #ccc solid;*/

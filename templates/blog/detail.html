@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}{{ blog.title }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -74,11 +75,14 @@
                 <div class="comment-area" style="overflow: hidden">
                     <h3 class="comment-title">提交评论</h3>
                     {% if user.is_authenticated %}
-                        <form action="{% url 'update_comment' %}" method="post">
+                        <form id="comment-form" action="{% url 'update_comment' %}" method="post">
                             <label>{{ user.username }}，欢迎评论~</label>
                             {% csrf_token %}
-                            {{ comment_form }}
-                            <input type="submit" value="评论" class="btn btn-primary" style="float: right">
+                            {% for field in comment_form %}
+                                {{ field }}
+                            {% endfor %}
+                            <span id="comment_error" class="text-danger pull-left"></span>
+                            <input type="submit" value="评论" class="btn btn-primary pull-right">
                         </form>
                     {% else %}
                         你尚未登录,登录之后才能评论
@@ -89,16 +93,61 @@
                 </div>
                 <div class="comment-area">
                     <h3 class="comment-title">评论列表</h3>
-                    {% for comment in comments %}
-                        <div>
+                    <div>
+                        {% for comment in comments %}
+                        <div id="comment-list">
                             {{ comment.user.username }}
                             ({{ comment.comment_time|date:"Y-m-d H:i:s" }}):
-                            {{ comment.text }}
+                            {{ comment.text|safe }}
                         </div>
                     {% empty %}
                         暂无评论
                     {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+{% block custom_js %}
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+    <script type="text/javascript">
+        $("#comment-form").submit(function () {
+            // 判断是否为空
+            $("#comment_error").text('');
+            if(CKEDITOR.instances['id_text'].document.getBody().getText().trim()==''){
+                $("#comment_error").text('评论内容不能为空！');
+                return false;
+            }
+            //更新数据到textarea
+            CKEDITOR.instances['id_text'].updateElement();
+            // 异步提交
+            $.ajax({
+                url: "{% url 'update_comment' %}",
+                type: "POST",
+                data: $(this).serialize(),
+                cache: false,
+                success: function (data) {
+                    console.log(data);
+                    if(data['status']=="SUCCESS"){
+                        // 异步提交成功之后插入数据
+                        var comment_html = '<div>'+ data['username'] +
+                                            '('+ data['comment_time'] + '): ' +
+                                            data['text'] + '</div>';
+                        $("#comment-list").prepend(comment_html);
+                        // 更新之后清空textarea
+                        CKEDITOR.instances['id_text'].setData('');
+                    }else {
+                        // 显示错误信息
+                        $("#comment_error").text(data['message']);
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr);
+                }
+            });
+            return false;
+        });
+    </script>
 {% endblock %}
