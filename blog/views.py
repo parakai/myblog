@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
+from django.contrib.contenttypes.models import ContentType
 
 import markdown
 
 from .models import Blog, Category
+from comment.forms import CommentForm
 
 
 class IndexView(ListView):
@@ -167,10 +169,16 @@ class BlogDetailView(DetailView):
         previous_blog = self.object.get_previous_blog()
         next_blog = self.object.get_next_blog()
         comments = self.object.get_comments()
+        blog_content_type = ContentType.objects.get_for_model(self.object)
+        comment_form = CommentForm(initial={
+            'content_type': blog_content_type.model,
+            'object_id': self.object.pk,
+        })
         context.update({
             'previous_blog': previous_blog,
             'next_blog': next_blog,
             'comments': comments,
+            'comment_form': comment_form,
         })
         return context
 
