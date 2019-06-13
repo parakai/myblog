@@ -12,7 +12,9 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('comment/', include('comment.urls')),
     path('login/', views.login, name="login"),
-    path('register/', views.register, name="register")
+    path('login_modal/', views.loginModal, name="login_modal"),
+    path('register/', views.register, name="register"),
+    path('logout/', views.logout, name="logout"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

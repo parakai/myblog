@@ -30,10 +30,10 @@ class Blog(models.Model):
     # 记录阅读量
     views = models.PositiveIntegerField(default=0)
 
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, blank=True)
 
-    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['-created_time']
@@ -49,6 +49,7 @@ class Blog(models.Model):
 
     def get_comments(self):
         blog_content_type = ContentType.objects.get_for_model(self)
-        comments = Comment.objects.filter(content_type=blog_content_type, object_id=self.pk)
+        comments = Comment.objects.filter(content_type=blog_content_type, object_id=self.pk, parent=None)\
+            .order_by('-comment_time')
         return comments
 

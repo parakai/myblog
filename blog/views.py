@@ -6,6 +6,7 @@ import markdown
 
 from .models import Blog, Category
 from comment.forms import CommentForm
+from myblog.forms import LoginForm
 
 
 class IndexView(ListView):
@@ -173,12 +174,14 @@ class BlogDetailView(DetailView):
         comment_form = CommentForm(initial={
             'content_type': blog_content_type.model,
             'object_id': self.object.pk,
+            'reply_comment_id': '0'
         })
         context.update({
             'previous_blog': previous_blog,
             'next_blog': next_blog,
             'comments': comments,
             'comment_form': comment_form,
+            'login_form': LoginForm(),
         })
         return context
 

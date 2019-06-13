@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 from .forms import LoginForm, RegisterForm
 
@@ -33,6 +34,18 @@ def login(request):
     return render(request, 'login.html', {'login_form': login_form})
 
 
+def loginModal(request):
+    login_form = LoginForm(request.POST)
+    data={}
+    if login_form.is_valid():
+        user = login_form.cleaned_data['user']
+        auth.login(request, user)
+        data['status'] = 'success'
+    else:
+        data['status'] = 'error'
+    return JsonResponse(data)
+
+
 def register(request):
     if request.method == 'POST':
         register_form = RegisterForm(request.POST)
@@ -57,3 +70,8 @@ def register(request):
     else:
         register_form = RegisterForm()
     return render(request, 'register.html', {'register_form': register_form})
+
+
+def logout(request):
+    auth.logout(request)
+    return redirect(request.GET.get('from', reverse('index')))
