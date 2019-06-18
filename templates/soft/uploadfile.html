@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}我的博客|下载{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">下载</h3>
+                  </div>
+                  <div class="panel-body">
+                    <form id="upload_for_modal" action=" " enctype="mwultipart/form-data" method="post">
+                        {% csrf_token %}
+                        {{ form }}
+{#                        <button type="submit" class="btn btn-primary">上传</button>#}
+                        <input type="submit" value="上传">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+{#            beforeSend: function(xhr, settings){#}
+{#                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");#}
+{#            },#}
+{% block custom_js %}
+    <script>
+        $("#upload_for_modal").submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+            url: "{% url 'uploads' %}",
+            type: "post",
+            cache: false,
+            data: $(this).serialize(),
+            {#processData: false,#}
+            {#contentType: false,#}
+            success: function(data) {
+                console.log(data);
+                if(data['status'] === 'success'){
+                    alert(123);
+                    window.location.reload();
+                }else {
+                    alert("错误！");
+                }
+            }
+        });
+        })
+    </script>
+{% endblock %}

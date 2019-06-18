@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load blog_tags %}
 {% block title %}{{ blog.title }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -46,26 +47,35 @@
             </div>
             <div class="col-md-3 col-xs-12 blog-border">
             <div class="side-list">
-                <h4><span class="glyphicon glyphicon-pushpin"></span> 广告合作</h4>
+                <h4>
+                    <span class="glyphicon glyphicon-book">
+                        最新文章
+                    </span>
+                </h4>
+                    {% get_recent_blogs as recent_blog_list %}
+                    <ul>
+                    {% for blog in recent_blog_list %}
+                        <li>
+                            <a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a>
+                        </li>
+                    {% empty %}
+                        暂无文章！
+                    {% endfor %}
+                    </ul>
             </div>
             <div class="side-list">
                 <h4>
-                    <span class="glyphicon glyphicon-book"></span>
-                    随机推荐
+                    <span class="glyphicon glyphicon-tags">
+                        分类
+                    </span>
                 </h4>
+                {% get_categories as category_list%}
                 <ul>
+                    {% for category in category_list %}
                     <li>
-                        <a href="/blog/75" target="_blank">VSTO新手常见问题</a>
+                        <a href="{% url 'category' category.pk %}">{{ category.name }}<span class="post-count">（{{ category.num_blogs }}）</span></a>
                     </li>
-                </ul>
-            </div>
-            <div class="side-list">
-                <h4>
-                    <span class="glyphicon glyphicon-book"></span>
-                    猜你喜欢
-                </h4>
-                <ul id="like_blogs_list">
-                    <li><a href="/blog/43" target="_blank">以图搜图(一)：Python实现dHash算法</a></li>
+                    {% endfor %}
                 </ul>
             </div>
             </div>

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}我的博客|下载{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">常用软件下载</h3>
+                  </div>
+                  <div class="panel-body">
+                  {% if user.is_authenticated %}
+                  <button id="uploadbtn2" class="btn btn-primary">上传文件</button>
+                  {% endif %}
+                  <div class="down-item">
+                      <ol class="down-desc">
+                          {% for file in file_list %}
+                          <li ><a href="{{ MEDIA_URL }}{{ file.file }}">{{ file.title }}（{{ file.size }}）</a></li>
+                          {% empty %}
+                              暂无软件下载
+                          {% endfor %}
+                      </ol>
+                  </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="upload_modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <form id="upload_for_modal" action="" enctype="multipart/form-data" method="post">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">上传</h4>
+                        </div>
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            {{ form }}
+                            <span id="upload_medal_tip" class="text-danger"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="upload_model" type="submit" class="btn btn-primary">上传</button>
+{#                            <input type="submit" value="上传">#}
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block custom_js %}
+<script>
+    $("#uploadbtn2").click(function () {
+        $("#upload_modal").modal('show');
+    });
+    $("#upload_for_modal").submit(function(event) {
+        event.preventDefault();
+        var form = new FormData();// 创建FormData对象
+        // 将数据封装到对象中,
+        {#form.append("file", $("#file")[0].files[0]); //一个文件#}
+        {#alert($("#file")[0].files.length);#}
+        for(var i=0;i<$("#id_file_field")[0].files.length;i++){
+            form.append('file_field', $("#id_file_field")[0].files[i]);
+        }
+        {#console.log(form.getAll('file'))#}
+        {#form.append("file", $("#file")[0].files[0]);#}
+        {#form.append("file", $("#file")[0].files);#}
+        console.log(form.getAll('file_field'));
+        $.ajax({
+            url: "{% url 'uploads' %}",
+            type: 'POST',
+            cache: false,
+            processData: false,
+            contentType: false,
+            data: form,
+            beforeSend: function(xhr, settings){
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); // 这句是关键
+            },
+            success: function(data) {
+                if(data['status'] === 'success'){
+                    window.location.reload();
+                }else {
+                    alert("上传错误！");
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

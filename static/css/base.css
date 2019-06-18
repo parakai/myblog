@@ -2,7 +2,7 @@ body,button, input, select, textarea,h1 ,h2, h3, h4, h5, h6,p,a,div {
     font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
 }
 
-ul,ol{ list-style-type:none;}
+/*ul,ol{ list-style-type:none;}*/
 ul,ol,li{ padding:0;margin:0;}
 /*body{ padding-top: 70px;}*/
 
@@ -32,6 +32,11 @@ ul,ol,li{ padding:0;margin:0;}
 
 .blog-list-footer{ text-align: center; padding-top: 1em;}
 .blog-list-footer .blog-footer-tip{ display: block; width: 100%; padding:0.5em 0 0 0; margin-bottom: -0.5em; font-size: 1em;}
+
+/*下载页面*/
+.down-desc{ margin-bottom: 1em; margin-left: 1em;}
+.down-desc li {margin-top: 1em;}
+.down-desc li a{color:#333}
 
 div.comment-area{
     margin-top: 2em;
