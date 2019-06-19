@@ -1,6 +1,9 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import View
+from django.views.generic.edit import FormView
+from django.views.generic import ListView
+from .forms import FileFieldForm
 from .forms import UploadFileForm
 from .models import UploadFile
 from . import utils
@@ -61,17 +64,6 @@ class uploadView(View):
         return JsonResponse(data)
 
 
-from django.views.generic.edit import FormView
-from django.views.generic import ListView
-from .forms import FileFieldForm
-
-
-# class UploadView(ListView):
-#     model = UploadFile
-#     template_name = 'soft/upload.html'
-#     context_object_name = 'file_list'
-
-
 class FileFieldView(FormView):
     form_class = FileFieldForm
     template_name = 'soft/upload.html'  # Replace with your template.
@@ -101,3 +93,9 @@ class FileFieldView(FormView):
         else:
             data['status'] = 'error'
         return JsonResponse(data)
+
+
+class DelFileView(ListView):
+    model = UploadFile
+    template_name = 'soft/delfile.html'
+    context_object_name = 'file_lists'

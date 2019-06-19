@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}删除上传文件{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="col-md-9 col-xs-12">
+            <div class="file-border">
+            <h3>删除文件</h3>
+            <button id="delfilebtn" class="btn btn-danger">删除</button>
+                <table id="result_list">
+                    <thead>
+                        <tr>
+                        <th scope="col" class="action-checkbox-column">
+                        <div class="text"><span><input type="checkbox" id="action-toggle"></span></div>
+                        <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-title">
+                        <div class="text"><a href="?o=1">文件名</a></div>
+                        <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-file">
+                        <div class="text"><a href="?o=2">文件路径</a></div>
+                        <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-upload_time">
+                        <div class="text"><a href="?o=3">上传时间</a></div>
+                        <div class="clear"></div>
+                        </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for file in file_lists %}
+                        <tr class="row1">
+                            <td class="action-checkbox">
+                                <input type="checkbox" name="selected_action" value="{{ file.pk }}" class="action-select">
+                            </td>
+                            <th class="field-title"><a href="">{{ file.title }}</a></th>
+                            <td class="field-file"><a href="">{{ file.file }}</a></td>
+                            <td class="field-upload_time nowrap">{{ file.upload_time|date:"Y-m-d H:i:s" }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block custom_js %}
+    <script>
+        {#function ckAll() {#}
+        {#  alert("选了啥？");#}
+        {#  var flag = $("#action-toggle")#}
+        {#};#}
+        $("#action-toggle").click(function () {
+            if($("#action-toggle")[0].checked){
+                $("[name = selected_action]:checkbox").attr("checked", true);
+            }else{
+                $("[name = selected_action]:checkbox").attr("checked", false);
+            }
+        });
+        $("#delfilebtn").click(function () {
+            alert("删除文件");
+
+        })
+    </script>
+{% endblock %}
