@@ -1,8 +1,9 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import View
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, DeleteView
 from django.views.generic import ListView
+from django.urls import reverse_lazy
 from .forms import FileFieldForm
 from .forms import UploadFileForm
 from .models import UploadFile
@@ -99,3 +100,8 @@ class DelFileView(ListView):
     model = UploadFile
     template_name = 'soft/delfile.html'
     context_object_name = 'file_lists'
+
+
+class DelFileView2(DeleteView):
+    model = UploadFile
+    success_url = reverse_lazy('delfiles')

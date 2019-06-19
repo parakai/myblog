@@ -10,7 +10,7 @@
                     <thead>
                         <tr>
                         <th scope="col" class="action-checkbox-column">
-                        <div class="text"><span><input type="checkbox" id="action-toggle"></span></div>
+                        <div class="text"><span><input type="checkbox" id="ipt_check_all"></span></div>
                         <div class="clear"></div>
                         </th>
                         <th scope="col" class="sortable column-title">
@@ -31,7 +31,7 @@
                     {% for file in file_lists %}
                         <tr class="row1">
                             <td class="action-checkbox">
-                                <input type="checkbox" name="selected_action" value="{{ file.pk }}" class="action-select">
+                                <input type="checkbox" name="selected_action" value="{{ file.pk }}" class="ipt_check">
                             </td>
                             <th class="field-title"><a href="">{{ file.title }}</a></th>
                             <td class="field-file"><a href="">{{ file.file }}</a></td>
@@ -50,16 +50,26 @@
         {#  alert("选了啥？");#}
         {#  var flag = $("#action-toggle")#}
         {#};#}
-        $("#action-toggle").click(function () {
-            if($("#action-toggle")[0].checked){
-                $("[name = selected_action]:checkbox").attr("checked", true);
+        $("#ipt_check_all").on('click', function () {
+            if($(this).prop("checked")) {
+                $(this).closest('table').find('.ipt_check').prop('checked', true);
             }else{
-                $("[name = selected_action]:checkbox").attr("checked", false);
+                $(this).closest('table').find('.ipt_check').prop('checked', false);
             }
         });
         $("#delfilebtn").click(function () {
-            alert("删除文件");
-
+            var chk_value = [];
+            $('input[name="selected_action"]:checked').each(function () {
+                chk_value.push($(this).val());
+            });
+            if (chk_value.length <= 0){
+                alert("请选择要删除的数据！");
+            }else {
+               if(confirm("你确定删除吗？")){
+                   location.href = '{% url 'delfiles2' chk_value %}'
+                   return false;
+               }
+            }
         })
     </script>
 {% endblock %}
