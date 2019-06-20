@@ -96,12 +96,26 @@ class FileFieldView(FormView):
         return JsonResponse(data)
 
 
-class DelFileView(ListView):
-    model = UploadFile
-    template_name = 'soft/delfile.html'
-    context_object_name = 'file_lists'
+class DeleteSelectView(View):
 
+    def get(self, request):
+        return render(request, 'soft/delfile.html', {
+            'file_lists': UploadFile.objects.all(),
+        })
 
-class DelFileView2(DeleteView):
-    model = UploadFile
-    success_url = reverse_lazy('delfiles')
+    def post(self, request):
+        if not request.user.is_authenticated:
+            # 判断用户登录状态
+            return HttpResponse('{"status":"fail", "msg":"用户未登录"}', content_type='application/json')
+        pk_array = request.POST.getlist('ids[]')
+        path_array = request.POST.getlist('filepaths[]')
+        # print(path_array)
+        utils.deletefile(path_array)
+        idstring = ','.join(pk_array)
+        # print(idstring)
+        try:
+            file_paths = UploadFile.objects.extra(where=['id in (' + idstring + ')']).select_for_update()
+            UploadFile.objects.extra(where=['id in (' + idstring + ')']).delete()
+        except Exception:
+            return HttpResponse('{"status":"fail", "msg":"ID不存在"}', content_type='application/json')
+        return HttpResponse('{"status":"success", "msg":"操作成功"}', content_type='application/json')

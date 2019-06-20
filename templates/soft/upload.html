@@ -13,14 +13,14 @@
                   <button id="uploadbtn2" class="btn btn-primary">上传文件</button>
                   <a id="delbtn2" class="btn btn-danger" href="{% url 'delfiles' %}">删除文件</a>
                   {% endif %}
-                  <div class="down-item">
-                      <ol class="down-desc">
+                  <div class="dt">
+                      <ul class="flnews">
                           {% for file in file_list %}
                           <li ><a href="{{ MEDIA_URL }}{{ file.file }}">{{ file.title }}（{{ file.size }}）</a></li>
                           {% empty %}
                               暂无软件下载
                           {% endfor %}
-                      </ol>
+                      </ul>
                   </div>
                   </div>
                 </div>
@@ -39,7 +39,7 @@
                             {% csrf_token %}
                             {{ form }}
                             <div class="pre_upfile">
-                                <table border="1">
+                                <table border="1" class="up_table">
                                     <tbody id="pre_uptable">
                                     </tbody>
                                 </table>
@@ -59,48 +59,62 @@
 {% endblock %}
 {% block custom_js %}
 <script>
-    $("#uploadbtn2").click(function () {
-        $("#upload_modal").modal('show');
-    });
-    {#$("#delbtn2").click(function () {#}
-    {#   window.location.href() #}
-    {#});#}
-    $("#id_file_field").change(function () {
-        $("#pre_uptable").text('');
-        var html = '';
-        for(var i=0;i<$("#id_file_field")[0].files.length;i++){
-            html += '<tr><td>'+$("#id_file_field")[0].files[i].name+'</td><td>'+$("#id_file_field")[0].files[i].size/1024+'</td></tr>';
-        }
-        $("#pre_uptable").append(html);
-    })
-    $("#upload_for_modal").submit(function (event) {
-        event.preventDefault();
-        var form = new FormData();// 创建FormData对象
-        //form.append("file", $("#file")[0].files[0]); //一个文件
-        for(var i=0;i<$("#id_file_field")[0].files.length;i++){
-            form.append('file_field', $("#id_file_field")[0].files[i]);
-        }
-        $.ajax({
-            url: "{% url 'uploads' %}",
-            type: 'POST',
-            cache: false,
-            processData: false,
-            contentType: false,
-            data: form,
-            beforeSend: function(xhr, settings){
-            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); // 这句是关键
-            },
-            success: function(data) {
-                if(data['status'] === 'success'){
-                    $("#upload_modal").modal('hide');
-                    alert("上传成功！");
-                    window.location.reload();
-                }else {
-                    alert("上传错误！");
-                }
+$("#uploadbtn2").click(function () {
+    $("#upload_modal").modal('show');
+});
+$("#id_file_field").change(function () {
+    $("#pre_uptable").text('');
+    var html = '';
+    for(var i=0;i<$("#id_file_field")[0].files.length;i++){
+        html += '<tr><td>'+$("#id_file_field")[0].files[i].name+'</td><td>'+
+            formatSize($("#id_file_field")[0].files[i].size/1024)+'</td><td>'+
+            '<div class="del_upfile">删除</div></td></tr>';
+    }
+    $("#pre_uptable").append(html);
+})
+$("#upload_for_modal").submit(function (event) {
+    event.preventDefault();
+    var form = new FormData();// 创建FormData对象
+    //form.append("file", $("#file")[0].files[0]); //一个文件
+    for(var i=0;i<$("#id_file_field")[0].files.length;i++){
+        form.append('file_field', $("#id_file_field")[0].files[i]);
+    }
+    $.ajax({
+        url: "{% url 'uploads' %}",
+        type: 'POST',
+        cache: false,
+        processData: false,
+        contentType: false,
+        data: form,
+        beforeSend: function(xhr, settings){
+        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); // 这句是关键
+        },
+        success: function(data) {
+            if(data['status'] === 'success'){
+                $("#upload_modal").modal('hide');
+                alert("上传成功！");
+                window.location.reload();
+            }else {
+                alert("上传错误！");
             }
-        });
-    })
+        }
+    });
+});
+function formatSize(size) {
+    if (size < 1024){
+        size = Math.round(size * 10) / 10 + 'KB';
+    }else {
+        size = Math.round(size/1024 * 10) / 10 + 'MB';
+    }
+    return size;
+};
+$(document).ready(function () {
+})
+.on('click', '.del_upfile', function () {
+    var index = $(this).parent().parent().index();
+    console.log(index);
+    $(this).parent().parent().remove();
+})
 
 </script>
 {% endblock %}

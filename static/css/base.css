@@ -34,9 +34,18 @@ ul,ol,li{ padding:0;margin:0;}
 .blog-list-footer .blog-footer-tip{ display: block; width: 100%; padding:0.5em 0 0 0; margin-bottom: -0.5em; font-size: 1em;}
 
 /*下载页面*/
-.down-desc{ margin-bottom: 1em; margin-left: 1em;}
-.down-desc li {margin-top: 1em;}
-.down-desc li a{color:#333}
+/*.down-desc{ margin-bottom: 1em; margin-left: 1em;}*/
+/*.down-desc li {margin-top: 1em;}*/
+/*.down-desc li a{color:#333}*/
+*{font-size:14px;color:#333;margin:0;padding:0;}
+.flnews li{line-height:30px;font-size:16px;margin-left:0px;padding-left:20px;background:url("/static/images/dot.png") left center no-repeat}
+.flnews li a{color:#333}
+.flnews{border-bottom:#e3e3e3 1px dotted;padding:10px 0;margin:0 12px}
+
+.pre_upfile{margin-top: 1em;}
+
+.up_table {width: 100%;}
+.up_table tr {text-align: center; height: 2em;}
 
 div.comment-area{
     margin-top: 2em;
