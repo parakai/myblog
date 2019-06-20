@@ -38,6 +38,11 @@
                         <div class="modal-body">
                             {% csrf_token %}
                             {{ form }}
+                             <span class="file-temp">
+                            </span>
+                            <!-- 查看更多文件 -->
+                            <ul class="item-more">
+                            </ul>
                             <div class="pre_upfile">
                                 <table border="1" class="up_table">
                                     <tbody id="pre_uptable">
@@ -58,20 +63,17 @@
     </div>
 {% endblock %}
 {% block custom_js %}
+    <!-- 查看更多文件 文件信息模版 -->
+    <script type="text/template" id="file-more-item-tpl">
+        <li>
+            <span class="file-item-more-name">{{name}}</span>
+            <span class="file-item-more-btn">&times;</span>
+        </li>
+    </script>
 <script>
 $("#uploadbtn2").click(function () {
     $("#upload_modal").modal('show');
 });
-$("#id_file_field").change(function () {
-    $("#pre_uptable").text('');
-    var html = '';
-    for(var i=0;i<$("#id_file_field")[0].files.length;i++){
-        html += '<tr><td>'+$("#id_file_field")[0].files[i].name+'</td><td>'+
-            formatSize($("#id_file_field")[0].files[i].size/1024)+'</td><td>'+
-            '<div class="del_upfile">删除</div></td></tr>';
-    }
-    $("#pre_uptable").append(html);
-})
 $("#upload_for_modal").submit(function (event) {
     event.preventDefault();
     var form = new FormData();// 创建FormData对象
@@ -108,13 +110,59 @@ function formatSize(size) {
     }
     return size;
 };
-$(document).ready(function () {
+// 保存当前选择的（更新后）文件列表
+var curFiles = [];
+
+// 初始选择文件时触发
+$('#id_file_field').change(function() {
+    $("#pre_uptable").text('');
+    var html = '';
+    for(var i=0;i<$("#id_file_field")[0].files.length;i++){
+        html += '<tr><td>'+$("#id_file_field")[0].files[i].name+'</td><td>'+
+            formatSize($("#id_file_field")[0].files[i].size/1024)+'</td><td>'+
+            '<div class="del_upfile">删除</div></td></tr>';
+    }
+    $("#pre_uptable").append(html);
+    var $this = $(this),
+        $temp = $('.del_upfile'),
+        files = this.files;
+
+    if (files && files.length) {
+        // 原始FileList对象不可更改，所以将其赋予curFiles提供接下来的修改
+        Array.prototype.push.apply(curFiles, files);
+        console.log(curFiles);
+
+        $this.hide();
+        {#$temp.css('display', 'inline-block');#}
+    }
+});
+$(document)
+    {#https://www.cnblogs.com/imwtr/p/5924042.html#}
+    .on('click', '.del_upfile', function() {
+    $('.upload-tip').hide();
+    {#var name = $(this).prev().text();#}
+        var name = $(this).closest("tr").find(":nth-child(1)").html();
+    console.log(name);
+    // 去除该文件
+    curFiles = curFiles.filter(function(file) {
+        {#return file.name !== name;#}
+        return file.name !== name;
+    });
+    console.log(curFiles);
+    // 文件列表数组被清空则重置文件选择表单项
+    if (!curFiles.length) {
+        $('#id_file_field').val('').show();
+        $('.file-temp').css('display', 'none');
+    } else {
+    }
+
+    {#console.log(curFiles)#}
 })
-.on('click', '.del_upfile', function () {
-    var index = $(this).parent().parent().index();
-    console.log(index);
-    $(this).parent().parent().remove();
-})
+{#.on('click', '.del_upfile', function () {#}
+{#    var index = $(this).parent().parent().index();#}
+{#    console.log(index);#}
+{#    $(this).parent().parent().remove();#}
+{#})#}
 
 </script>
 {% endblock %}
