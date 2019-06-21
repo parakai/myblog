@@ -47,6 +47,11 @@ ul,ol,li{ padding:0;margin:0;}
 .up_table {width: 100%;}
 .up_table tr {text-align: center; height: 2em;}
 
+/*表格*/
+.file-border table{ margin-top: 1em;}
+/*标题行居中*/
+/*.file-border table thead tr th{ vertical-align: middle; text-align: center;}*/
+
 div.comment-area{
     margin-top: 2em;
 }

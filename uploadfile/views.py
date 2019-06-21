@@ -91,6 +91,7 @@ class FileFieldView(FormView):
                 uf.size = utils.getfilesize(size)
                 uf.save()
             data['status'] = 'success'
+            data['len'] = len(files)
         else:
             data['status'] = 'error'
         return JsonResponse(data)
@@ -119,3 +120,5 @@ class DeleteSelectView(View):
         except Exception:
             return HttpResponse('{"status":"fail", "msg":"ID不存在"}', content_type='application/json')
         return HttpResponse('{"status":"success", "msg":"操作成功"}', content_type='application/json')
+
+

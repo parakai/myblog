@@ -49,12 +49,12 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <span id="upload_medal_tip" class="text-danger"></span>
+                            <span id="upload_tip"></span>
                         </div>
                         <div class="modal-footer">
                             <button id="upload_btn" class="btn btn-primary">上传</button>
 {#                            <input type="submit" value="上传">#}
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button id="btn_close" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                         </div>
                     </form>
                 </div>
@@ -63,45 +63,38 @@
     </div>
 {% endblock %}
 {% block custom_js %}
-    <!-- 查看更多文件 文件信息模版 -->
-    <script type="text/template" id="file-more-item-tpl">
-        <li>
-            <span class="file-item-more-name">{{name}}</span>
-            <span class="file-item-more-btn">&times;</span>
-        </li>
-    </script>
 <script>
 $("#uploadbtn2").click(function () {
     $("#upload_modal").modal('show');
 });
-$("#upload_for_modal").submit(function (event) {
-    event.preventDefault();
-    var form = new FormData();// 创建FormData对象
-    //form.append("file", $("#file")[0].files[0]); //一个文件
-    for(var i=0;i<$("#id_file_field")[0].files.length;i++){
-        form.append('file_field', $("#id_file_field")[0].files[i]);
-    }
-    $.ajax({
-        url: "{% url 'uploads' %}",
-        type: 'POST',
-        cache: false,
-        processData: false,
-        contentType: false,
-        data: form,
-        beforeSend: function(xhr, settings){
-        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); // 这句是关键
-        },
-        success: function(data) {
-            if(data['status'] === 'success'){
-                $("#upload_modal").modal('hide');
-                alert("上传成功！");
-                window.location.reload();
-            }else {
-                alert("上传错误！");
-            }
-        }
-    });
-});
+{#$("#upload_for_modal").submit(function (event) {#}
+{#    event.preventDefault();#}
+{#    var form = new FormData();// 创建FormData对象#}
+{#    //form.append("file", $("#file")[0].files[0]); //一个文件#}
+{#    for(var i=0;i<$("#id_file_field")[0].files.length;i++){#}
+{#        form.append('file_field', $("#id_file_field")[0].files[i]);#}
+{#    }#}
+{#    $.ajax({#}
+{#        url: "{% url 'uploads' %}",#}
+{#        type: 'POST',#}
+{#        cache: false,#}
+{#        processData: false,#}
+{#        contentType: false,#}
+{#        data: form,#}
+{#        beforeSend: function(xhr, settings){#}
+{#        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); // 这句是关键#}
+{#        },#}
+{#        success: function(data) {#}
+{#            if(data['status'] === 'success'){#}
+{#                $("#upload_modal").modal('hide');#}
+{#                alert("上传成功！");#}
+{#                window.location.reload();#}
+{#            }else {#}
+{#                alert("上传错误！");#}
+{#            }#}
+{#        }#}
+{#    });#}
+{#});#}
 function formatSize(size) {
     if (size < 1024){
         size = Math.round(size * 10) / 10 + 'KB';
@@ -116,6 +109,7 @@ var curFiles = [];
 // 初始选择文件时触发
 $('#id_file_field').change(function() {
     $("#pre_uptable").text('');
+    $("#upload_tip").removeClass('text-danger').text('');
     var html = '';
     for(var i=0;i<$("#id_file_field")[0].files.length;i++){
         html += '<tr><td>'+$("#id_file_field")[0].files[i].name+'</td><td>'+
@@ -124,40 +118,73 @@ $('#id_file_field').change(function() {
     }
     $("#pre_uptable").append(html);
     var $this = $(this),
-        $temp = $('.del_upfile'),
         files = this.files;
 
     if (files && files.length) {
         // 原始FileList对象不可更改，所以将其赋予curFiles提供接下来的修改
         Array.prototype.push.apply(curFiles, files);
-        console.log(curFiles);
-
         $this.hide();
-        {#$temp.css('display', 'inline-block');#}
+        $this.prev().hide();
+        $("#upload_tip").addClass('text-danger').text('共选择' + curFiles.length + '个文件');
     }
 });
 $(document)
-    {#https://www.cnblogs.com/imwtr/p/5924042.html#}
     .on('click', '.del_upfile', function() {
-    $('.upload-tip').hide();
-    {#var name = $(this).prev().text();#}
         var name = $(this).closest("tr").find(":nth-child(1)").html();
-    console.log(name);
-    // 去除该文件
-    curFiles = curFiles.filter(function(file) {
-        {#return file.name !== name;#}
-        return file.name !== name;
-    });
-    console.log(curFiles);
-    // 文件列表数组被清空则重置文件选择表单项
-    if (!curFiles.length) {
-        $('#id_file_field').val('').show();
-        $('.file-temp').css('display', 'none');
-    } else {
-    }
-
+        // 去除该文件
+        curFiles = curFiles.filter(function(file) {
+            return file.name !== name;
+        });
+        $(this).parent().parent().remove();
+        $("#upload_tip").addClass('text-danger').text('共选择' + curFiles.length + '个文件');
+        {#console.log(curFiles);#}
+        // 文件列表数组被清空则重置文件选择表单项
+        if (!curFiles.length) {
+            $('#id_file_field').val('').show();
+            $('#id_file_field').prev().show();
+        }
     {#console.log(curFiles)#}
-})
+    })
+    .on('click', '#upload_btn', function (event) {
+        event.preventDefault();
+        if(curFiles.length===0){
+            $("#upload_tip").addClass('text-danger').text('请选择文件上传!');
+            return;
+        }
+        //构建FormData对象
+        var fd = new FormData();
+        for(var i = 0, j = curFiles.length; i < j; ++i ){
+            fd.append('file_field', curFiles[i]);
+        }
+        $.ajax({
+            url: "{% url 'uploads' %}",
+            type: 'POST',
+            cache: false,
+            processData: false,
+            contentType: false,
+            data: fd,
+            beforeSend: function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); // 这句是关键
+            },
+            success: function (data) {
+                if(data['status'] === 'success'){
+                    {#$("#upload_modal").modal('hide');#}
+                    $("#upload_tip").addClass('text-danger').text(data['len'] + '个文件上传成功!');
+                    window.setTimeout("window.location.reload();", 2000);  //2s后刷新页面！
+
+                }else {
+                    alert("上传错误！");
+                }
+            }
+        });
+    })
+    .on('click', '#btn_close', function () {
+        $("#pre_uptable").text('');
+        $('#id_file_field').val('').show();
+        curFiles = [];
+        $("#upload_tip").removeClass('text-danger').text('');
+        {#$("#upload_modal").modal('hide');#}
+    })
 {#.on('click', '.del_upfile', function () {#}
 {#    var index = $(this).parent().parent().index();#}
 {#    console.log(index);#}
