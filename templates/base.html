@@ -29,6 +29,7 @@
                     <li><a href="{% url 'index' %}">首页</a></li>
                     <li><a href="{% url 'blog_list' %}">博客列表</a></li>
                     <li><a href="{% url 'uploads' %}">下载</a></li>
+                    <li><a href="{% url 'tree' %}">树形结构</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_authenticated %}

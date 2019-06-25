@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'blog',
     'comment',
     'uploadfile',
+    'rest_framework',  # 配置 rest_framework app
+    'node',
 ]
 
 MIDDLEWARE = [
