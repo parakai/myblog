@@ -75,16 +75,30 @@
 				rMenu.css({"visibility" : "hidden"});
 			}
 		}
-		var addCount = 1;
 		function addTreeNode() {
 			hideRMenu();
-			var newNode = { name:"增加" + (addCount++)};
-			if (zTree.getSelectedNodes()[0]) {
-				newNode.checked = zTree.getSelectedNodes()[0].checked;
-				zTree.addNodes(zTree.getSelectedNodes()[0], newNode);
-			} else {
-				zTree.addNodes(null, newNode);
-			}
+			var parentNode = zTree.getSelectedNodes()[0]; //选中的当前节点
+            if(!parentNode){
+                return;
+            }
+            var url = "{% url 'node-children' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", parentNode.meta.node.id);
+            console.log(url);
+            $.post(url, {}, function (data, status) {
+                if(status === "success"){
+                    var newNode = {
+                        id: data["key"],
+                        name: data["value"],
+                        pId: parentNode.id,
+                        meta: {
+                            "node": data
+                        }
+                    };
+                    newNode.checked = zTree.getSelectedNodes()[0].checked;
+                    zTree.addNodes(parentNode, 0, newNode);
+                }else {
+                    alert("创建节点失败！")
+                }
+            });
 		}
 		function removeTreeNode() {
 			hideRMenu();
@@ -131,7 +145,7 @@
                     async: {
                         enable: true,
                         url: url,
-                        {#autoParam: ["id=key", "name=n", "level=lv"],#}
+                        autoParam: ["id=key", "name=n", "level=lv"],
                         type: 'get'
                     },
                     edit: {

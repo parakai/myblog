@@ -21,6 +21,10 @@ class Node(models.Model):
         parent_key = ":".join(self.key.split(":")[:-1])
         return parent_key
 
+    @property
+    def level(self):
+        return len(self.key.split(':'))
+
     @classmethod
     def root(cls):
         root = cls.objects.filter(key__regex=r'^[0-9]+$')
@@ -49,6 +53,31 @@ class Node(models.Model):
     def get_children(self, with_self=False):
         pattern = r'^{0}$|^{0}:[0-9]+$' if with_self else r'^{0}:[0-9]+$'
         return self.__class__.objects.filter(key__regex=pattern.format(self.key))
+
+    def get_next_child_preset_name(self):
+        name = "新节点"
+        values = [
+            child.value[child.value.rfind(' '):]
+            for child in self.get_children()
+            if child.value.startswith(name)
+        ]
+        values = [int(value) for value in values if value.strip().isdigit()]
+        count = max(values) + 1 if values else 1
+        return '{} {}'.format(name, count)
+
+    def create_child(self, value, _id=None):
+        with transaction.atomic():
+            child_key = self.get_next_child_key()
+            print(child_key)
+            child = self.__class__.objects.create(key=child_key, value=value)
+            print(child)
+            return child
+
+    def get_next_child_key(self):
+        mark = self.child_mark
+        self.child_mark += 1
+        self.save()
+        return "{}:{}".format(self.key, mark)
 
     def as_tree_node(self):
         from .tree import TreeNode

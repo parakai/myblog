@@ -71,6 +71,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # MEDIA_URL
                 'django.template.context_processors.media',
+                'myblog.myblog_processor.blog_processor',
             ],
         },
     },
