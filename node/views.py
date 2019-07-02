@@ -63,7 +63,6 @@ class NodeChildrenApi(mixins.ListModelMixin, generics.CreateAPIView):
         value = request.data.get("value")
         print(value)
         _id = request.data.get('id') or None
-        print(_id)
         values = [child.value for child in instance.get_children()]
         if value in values:
             raise ValidationError("相同层级节点名称不能相同！")

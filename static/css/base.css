@@ -52,6 +52,9 @@ ul,ol,li{ padding:0;margin:0;}
 /*标题行居中*/
 /*.file-border table thead tr th{ vertical-align: middle; text-align: center;}*/
 
+/*进度条*/
+.progress {margin-top: 1em;}
+
 div.comment-area{
     margin-top: 2em;
 }

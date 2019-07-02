@@ -94,7 +94,7 @@
                         }
                     };
                     newNode.checked = zTree.getSelectedNodes()[0].checked;
-                    zTree.addNodes(parentNode, 0, newNode);
+                    zTree.addNodes(parentNode, newNode);
                 }else {
                     alert("创建节点失败！")
                 }
@@ -131,7 +131,7 @@
 		    if(zTree){
 		        return;
             }
-		    var url = '{% url 'node-children' %}';
+		    var url = '{% url 'node-tree' %}';
             var setting = {
                     view: {
                         dblClickExpand: false,

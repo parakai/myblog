@@ -3,7 +3,7 @@ from django.db import models, transaction
 
 
 class Node(models.Model):
-    id = models.UUIDField(default=uuid.uuid4(), primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     key = models.CharField(unique=True, max_length=64)  # '1:1:1:1'
     value = models.CharField(max_length=128)
     child_mark = models.IntegerField(default=0)
@@ -68,9 +68,7 @@ class Node(models.Model):
     def create_child(self, value, _id=None):
         with transaction.atomic():
             child_key = self.get_next_child_key()
-            print(child_key)
             child = self.__class__.objects.create(key=child_key, value=value)
-            print(child)
             return child
 
     def get_next_child_key(self):

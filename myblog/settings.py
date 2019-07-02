@@ -98,6 +98,7 @@ DATABASES = {
         'PASSWORD': 'root123',
         'HOST': '127.0.0.1',
         'PORT': '3306',
+        'ATOMIC_REQUESTS': True,
         "OPTIONS": {"init_command": "SET default_storage_engine=INNODB;"}
     }
 }

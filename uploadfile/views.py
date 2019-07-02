@@ -105,9 +105,13 @@ class DeleteSelectView(View):
         })
 
     def post(self, request):
+        data = {}
         if not request.user.is_authenticated:
+            data['status'] = 'fail'
+            data['msg'] = "用户未登录"
             # 判断用户登录状态
-            return HttpResponse('{"status":"fail", "msg":"用户未登录"}', content_type='application/json')
+            # return HttpResponse('{"status":"fail", "msg":"用户未登录"}', content_type='application/json')
+            return JsonResponse(data)
         pk_array = request.POST.getlist('ids[]')
         path_array = request.POST.getlist('filepaths[]')
         # print(path_array)
@@ -117,8 +121,11 @@ class DeleteSelectView(View):
         try:
             file_paths = UploadFile.objects.extra(where=['id in (' + idstring + ')']).select_for_update()
             UploadFile.objects.extra(where=['id in (' + idstring + ')']).delete()
+            data['status'] = "success"
+            data['msg'] = "操作成功！"
         except Exception:
-            return HttpResponse('{"status":"fail", "msg":"ID不存在"}', content_type='application/json')
-        return HttpResponse('{"status":"success", "msg":"操作成功"}', content_type='application/json')
+            data['status'] = "fail"
+            data['msg'] = "ID不存在！"
+        return JsonResponse(data)
 
 
