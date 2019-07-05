@@ -1,5 +1,5 @@
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse, Http404
+from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.views.generic.edit import FormView, DeleteView
 from django.views.generic import ListView
@@ -74,6 +74,7 @@ class FileFieldView(FormView):
         file_list = UploadFile.objects.all()
         return render(request, 'soft/upload.html', {
             'file_list': file_list,
+            'file_order': UploadFile.objects.all().order_by('-download_nums')[:10],
             'form': FileFieldForm,
         })
 
@@ -86,15 +87,41 @@ class FileFieldView(FormView):
             for f in files:
                 uf = UploadFile()
                 uf.file = f
-                uf.title = utils.getfilename(f.name)
-                size = round(f.size / 1024, 2)
-                uf.size = utils.getfilesize(size)
+                uf.title = f.name.split('/')[-1]
                 uf.save()
             data['status'] = 'success'
             data['len'] = len(files)
         else:
             data['status'] = 'error'
         return JsonResponse(data)
+
+
+from django.http import FileResponse
+import os
+from django.utils.http import urlquote
+
+
+def file_download(request, file_path):
+    ext = os.path.basename(file_path).split('.')[-1].lower()
+    if ext not in ['py', 'db', 'sqlite3']:
+        response = FileResponse(open(file_path, 'rb'))
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment;filename="{0}"'.format(urlquote(os.path.basename(file_path)))
+        return response
+    else:
+        raise Http404
+
+
+class DownloadView2(View):
+    def get(self, request, *args, **kwargs):
+        dfile = get_object_or_404(UploadFile, pk=kwargs.get('file_pk'))
+        name = dfile.file.name.split('/')[-1]
+        response = FileResponse(open(dfile.file.path, 'rb'))
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment;filename="{0}"'.format(urlquote(name))
+        dfile.download_nums += 1
+        dfile.save()
+        return response
 
 
 class DeleteSelectView(View):

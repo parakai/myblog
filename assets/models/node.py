@@ -9,6 +9,8 @@ class Node(models.Model):
     child_mark = models.IntegerField(default=0)
     c_time = models.DateTimeField(auto_now_add=True)
 
+    is_node = True
+
     class Meta:
         verbose_name = "节点"
         ordering = ['id']
@@ -50,8 +52,36 @@ class Node(models.Model):
         else:
             return False
 
+    @property
+    def parent(self):
+        if self.is_root():
+            return self
+        try:
+            parent = self.__class__.objects.get(key=self.parent_key)
+            return parent
+        except Node.DoesNotExist:
+            return self.__class__.root()
+
+    @parent.setter
+    def parent(self, parent):
+        if not self.is_node:
+            self.key = parent.key + ':fake'
+            return
+        children = self.get_all_children()
+        old_key = self.key
+        with transaction.atomic():
+            self.key = parent.get_next_child_key()
+            for child in children:
+                child.key = child.key.replace(old_key, self.key, 1)
+                child.save()
+            self.save()
+
     def get_children(self, with_self=False):
         pattern = r'^{0}$|^{0}:[0-9]+$' if with_self else r'^{0}:[0-9]+$'
+        return self.__class__.objects.filter(key__regex=pattern.format(self.key))
+
+    def get_all_children(self, with_self=False):
+        pattern = r'^{0}$|^{0}:' if with_self else r'^{0}:'
         return self.__class__.objects.filter(key__regex=pattern.format(self.key))
 
     def get_next_child_preset_name(self):
@@ -78,9 +108,9 @@ class Node(models.Model):
         return "{}:{}".format(self.key, mark)
 
     def as_tree_node(self):
-        from .tree import TreeNode
-        from .serializers import NodeSerializer
-        # name = '{} ({})'.format(self.value, self.assets_amount)
+        from ..tree import TreeNode
+        from assets.serializers.node import NodeSerializer
+        # name = '{} ({})'.format(self.valdue, self.assets_amount)
         name = self.value
         node_serializer = NodeSerializer(instance=self)
         data = {
@@ -89,7 +119,7 @@ class Node(models.Model):
             'title': name,
             'pId': self.parent_key,
             'isParent': True,
-            'open': self.is_root(),
+            'open': True,
             'meta': {
                 'node': node_serializer.data,
                 'type': 'node'

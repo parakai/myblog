@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Node
+from assets.models.node import Node
 
 
 class NodeSerializer(serializers.ModelSerializer):
@@ -9,3 +9,6 @@ class NodeSerializer(serializers.ModelSerializer):
             'id', 'key', 'value',
         ]
 
+
+class NodeAddChildrenSerializer(serializers.Serializer):
+    nodes = serializers.ListField()

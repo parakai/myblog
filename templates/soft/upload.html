@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-lg-8">
                 <div class="panel panel-default">
                   <div class="panel-heading">
                     <h3 class="panel-title">常用软件下载</h3>
@@ -14,14 +14,34 @@
                   <a id="delbtn2" class="btn btn-danger" href="{% url 'delfiles' %}">删除文件</a>
                   {% endif %}
                   <div class="dt">
-                      <ul class="flnews">
+                      <ul id="dt-li" class="flnews">
                           {% for file in file_list %}
-                          <li ><a href="{{ MEDIA_URL }}{{ file.file }}">{{ file.title }}（{{ file.size }}）</a></li>
+{#                          <li ><a href="{{ MEDIA_URL }}{{ file.file }}">{{ file.title }}（{{ file.size }}）</a></li>#}
+{#                          <li ><a href="/soft/download{{ file.file.url }}">{{ file.title }}（{{ file.file.size | filesizeformat }}）</a></li>#}
+                          <li ><a href="{% url 'downloads2' file.pk %}">{{ file.title }}（{{ file.file.size | filesizeformat }}）</a></li>
                           {% empty %}
                               暂无软件下载
                           {% endfor %}
                       </ul>
                   </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">下载排行</h3>
+                  </div>
+                  <div class="panel-body">
+                      <ol>
+                          {% for item in file_order %}
+                          <li>
+                              <a href="{% url 'downloads2' item.pk %}">{{ item.title }}（{{ item.download_nums }}）</a>
+                          </li>
+                          {% empty %}
+                              暂无文件下载！
+                          {% endfor %}
+                      </ol>
                   </div>
                 </div>
             </div>

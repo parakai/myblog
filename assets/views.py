@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, mixins
+from rest_framework import generics, mixins, viewsets
 from rest_framework.serializers import ValidationError
 from rest_framework.response import Response
 
 from .tree import TreeNodeSerializer
-from .models import Node
-from .serializers import NodeSerializer
+from assets.models.node import Node
+from .serializers import node
+from .utils import get_object_or_none
 
 
 def treeview(request):
@@ -37,7 +38,7 @@ class NodeAsTreeApi(generics.ListAPIView):
         else:
             self.is_root = True
             self.node = Node.root()
-            queryset = list(self.node.get_children(with_self=True))
+            queryset = list(self.node.get_all_children(with_self=True))
             nodes_invalid = Node.objects.exclude(key__startswith=self.node.key)
             queryset.extend(nodes_invalid)
         queryset = [node.as_tree_node() for node in queryset]
@@ -46,7 +47,7 @@ class NodeAsTreeApi(generics.ListAPIView):
 
 class NodeChildrenApi(mixins.ListModelMixin, generics.CreateAPIView):
     queryset = Node.objects.all()
-    serializer_class = NodeSerializer
+    serializer_class = node.NodeSerializer
     instance = None
 
     def get(self, request, *args, **kwargs):
@@ -76,3 +77,24 @@ class NodeChildrenApi(mixins.ListModelMixin, generics.CreateAPIView):
         else:
             node = get_object_or_404(Node, pk=pk)
         return node
+
+
+class NodeAddChildrenApi(generics.UpdateAPIView):
+    queryset = Node.objects.all()
+    serializer_class = node.NodeAddChildrenSerializer
+    instance = None
+
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        nodes_id = request.data.get("nodes")
+        children = [get_object_or_none(Node, id=pk) for pk in nodes_id]
+        for node in children:
+            if not node:
+                continue
+            node.parent = instance
+        return Response("OK")
+
+
+class NodeViewSet(viewsets.ModelViewSet):
+    queryset = Node.objects.all()
+    serializer_class = node.NodeSerializer

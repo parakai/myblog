@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'comment',
     'uploadfile',
     'rest_framework',  # 配置 rest_framework app
-    'node',
+    'assets',
 ]
 
 MIDDLEWARE = [

@@ -16,13 +16,13 @@ website:    http://code.google.com/p/jquerytree/
   margin: 0;
   font-size: 12px;
   font-family: Verdana, Arial, Helvetica, AppleGothic, sans-serif;
-  background-color: #af0000;
+  background-color: #f3f3f3;
 }
 .ztree {
   margin: 0;
   padding: 5px;
-  color: #ffffff;
-  background-color: #af0000;
+  color: #676a6c;
+  background-color: #f3f3f3;
 }
 .ztree li {
   padding: 0;
@@ -41,8 +41,8 @@ website:    http://code.google.com/p/jquerytree/
   padding-right: 3px;
   margin: 0;
   cursor: pointer;
-  height: 17px;
-  color: #ffffff;
+  height: 20px;
+  color: #676a6c;
   background-color: transparent;
   text-decoration: none;
   vertical-align: top;
@@ -53,41 +53,43 @@ website:    http://code.google.com/p/jquerytree/
   width: 80px;
   padding: 0;
   margin: 0;
-  color: #af0000;
-  background-color: #ffffff;
+  color: #f3f3f3;
+  background-color: #676a6c;
   font-size: 12px;
   border: 1px #585956 solid;
   *border: 0px;
 }
 .ztree li a:hover {
-  text-decoration: underline;
+  background: #e7f4f9;
+  border-radius: 2px;
+  box-shadow: inset 0 0 1px #cccccc;
 }
 .ztree li a.curSelectedNode {
   padding-top: 0px;
-  background-color: #af4040;
-  color: #ffff00;
-  height: 17px;
+  background-color: #beebff;
+  color: #676a6c;
+  height: 20px;
   opacity: 0.8;
 }
 .ztree li a.curSelectedNode_Edit {
   padding-top: 0px;
-  background-color: transparent;
-  color: #ffff00;
-  height: 17px;
-  border: 1px #666 solid;
+  background-color: #f3f3f3;
+  color: red;
+  height: 20px;
+  border: 1px #676a6c solid;
   opacity: 0.8;
 }
 .ztree li a.tmpTargetNode_inner {
   padding-top: 0px;
-  background-color: #aaa;
-  color: #ffff00;
-  height: 17px;
+  background-color: #f3f3f3;
+  color: #676a6c;
+  height: 20px;
   border: 1px #666 solid;
   opacity: 0.8;
   filter: alpha(opacity=80);
 }
 .ztree li span {
-  line-height: 17px;
+  line-height: 20px;
   margin-right: 2px;
   background-color: transparent;
 }
@@ -95,8 +97,8 @@ website:    http://code.google.com/p/jquerytree/
   line-height: 0;
   margin: 0;
   padding: 0;
-  width: 15px;
-  height: 17px;
+  width: 18px;
+  height: 20px;
   display: inline-block;
   vertical-align: top;
   border: 0px solid;
@@ -107,7 +109,7 @@ website:    http://code.google.com/p/jquerytree/
   background-attachment: scroll;
 }
 .ztree li span.button::before {
-  color: #ffffff;
+  color: #676a6c;
   font-family: FontAwesome;
   padding-top: 10px;
 }
@@ -124,7 +126,7 @@ website:    http://code.google.com/p/jquerytree/
 }
 .ztree li span.button.chk.checkbox_false_full_focus::before {
   content: "\f096";
-  color: #ffff00;
+  color: #676a6c;
 }
 .ztree li span.button.chk.checkbox_false_part::before {
   content: "\f096";
@@ -149,11 +151,11 @@ website:    http://code.google.com/p/jquerytree/
 }
 .ztree li span.button.chk.checkbox_true_part_focus::before {
   content: "\f14a";
-  color: #ffff00;
+  color: #676a6c;
 }
 .ztree li span.button.chk.checkbox_true_full_focus::before {
   content: "\f046";
-  color: #ffff00;
+  color: #676a6c;
 }
 .ztree li span.button.chk.checkbox_true_part::before {
   content: "\f046";
@@ -172,7 +174,7 @@ website:    http://code.google.com/p/jquerytree/
 }
 .ztree li span.button.chk.radio_false_full_focus::before {
   content: "\f10c";
-  color: #ffff00;
+  color: #676a6c;
 }
 .ztree li span.button.chk.radio_false_part::before {
   content: "\f10c";
@@ -180,7 +182,7 @@ website:    http://code.google.com/p/jquerytree/
 }
 .ztree li span.button.chk.radio_false_part_focus::before {
   content: "\f10c";
-  color: #ffff00;
+  color: #676a6c;
 }
 .ztree li span.button.chk.radio_false_disable::before {
   content: "\f1db";
@@ -191,7 +193,7 @@ website:    http://code.google.com/p/jquerytree/
 }
 .ztree li span.button.chk.radio_true_full_focus::before {
   content: "\f192";
-  color: #ffff00;
+  color: #676a6c;
 }
 .ztree li span.button.chk.radio_true_part::before {
   content: "\f192";
@@ -206,53 +208,53 @@ website:    http://code.google.com/p/jquerytree/
   color: #808080;
 }
 .ztree li span.button.switch {
-  width: 15px;
-  height: 17px;
+  width: 18px;
+  height: 20px;
 }
 .ztree li span.button.root_open::before {
-  content: "\f078";
+  content: "\f107";
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
 }
 .ztree li span.button.root_close::before {
-  content: "\f115";
+  content: "\f105";
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
 }
 .ztree li span.button.roots_open::before {
-  content: "\f078";
+  content: "\f107";
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
 }
 .ztree li span.button.roots_close::before {
-  content: "\f054";
+  content: "\f105";
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
 }
 .ztree li span.button.center_open::before {
-  content: "\f078";
+  content: "\f107";
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
 }
 .ztree li span.button.center_close::before {
-  content: "\f054";
+  content: "\f105";
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
 }
 .ztree li span.button.bottom_open::before {
-  content: "\f078";
+  content: "\f107";
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
 }
 .ztree li span.button.bottom_close::before {
-  content: "\f054";
+  content: "\f105";
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
@@ -261,49 +263,73 @@ website:    http://code.google.com/p/jquerytree/
   background: none;
 }
 .ztree li span.button.roots_docu::before {
-  content: "\f022";
+  content: "\f114";
   padding-left: 2px;
   display: inline-block;
-  color: #ffffff;
+  color: #676a6c;
 }
 .ztree li span.button.center_docu::before {
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
-  color: #ffffff;
+  color: #676a6c;
 }
 .ztree li span.button.bottom_docu::before {
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
-  color: #ffffff;
+  color: #676a6c;
 }
 .ztree li span.button.noline_docu {
   background: none;
 }
 .ztree li span.button.ico_open::before {
-  content: "\f115";
+  content: "\f07c";
   font-family: FontAwesome;
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
-  color: #ffffff;
+  color: #676a6c;
 }
 .ztree li span.button.ico_close::before {
-  content: "\f114";
+  content: "\f07b";
   font-family: FontAwesome;
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
-  color: #ffffff;
+  color: #676a6c;
 }
 .ztree li span.button.ico_docu::before {
+  content: "\f07b";
+  font-family: FontAwesome;
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+  color: #676a6c;
+}
+.ztree li span.button.file_ico_docu::before {
   content: "\f022";
   font-family: FontAwesome;
   padding-top: 10px;
   padding-left: 2px;
   display: inline-block;
-  color: #ffffff;
+  color: #676a6c;
+}
+.ztree li span.button.linux_ico_docu::before {
+  content: "\f17c";
+  font-family: FontAwesome;
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+  color: #676a6c;
+}
+.ztree li span.button.windows_ico_docu::before {
+  content: "\f17a";
+  font-family: FontAwesome;
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+  color: #676a6c;
 }
 .ztree li span.button.edit {
   margin-left: 4px;
@@ -340,7 +366,7 @@ website:    http://code.google.com/p/jquerytree/
 }
 .ztree li span.button.ico_loading {
   margin-right: 2px;
-  background: url(./img/loading.gif) no-repeat scroll 0 0 transparent;
+  background: url(img/loading.gif) no-repeat scroll 0 0 transparent;
   vertical-align: top;
   *vertical-align: middle;
 }
@@ -351,7 +377,7 @@ ul.tmpTargetzTree {
 }
 span.tmpzTreeMove_arrow {
   width: 16px;
-  height: 17px;
+  height: 20px;
   display: inline-block;
   padding: 0;
   margin: 2px 0 0 1px;
@@ -363,7 +389,7 @@ span.tmpzTreeMove_arrow {
 span.tmpzTreeMove_arrow::before {
   content: "\f04b";
   font-family: FontAwesome;
-  color: #ffff00;
+  color: #676a6c;
 }
 ul.ztree.zTreeDragUL {
   margin: 0;
@@ -373,7 +399,7 @@ ul.ztree.zTreeDragUL {
   height: auto;
   overflow: hidden;
   background-color: #cfcfcf;
-  border: 1px #ffff00 dotted;
+  border: 1px #676a6c dotted;
   opacity: 0.8;
   filter: alpha(opacity=80);
 }
