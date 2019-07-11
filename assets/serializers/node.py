@@ -3,10 +3,12 @@ from assets.models.node import Node
 
 
 class NodeSerializer(serializers.ModelSerializer):
+    assets_amount = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Node
         fields = [
-            'id', 'key', 'value',
+            'id', 'key', 'value', 'child_mark', 'assets_amount'
         ]
 
 

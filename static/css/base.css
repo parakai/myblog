@@ -37,7 +37,7 @@ ul,ol,li{ padding:0;margin:0;}
 /*.down-desc{ margin-bottom: 1em; margin-left: 1em;}*/
 /*.down-desc li {margin-top: 1em;}*/
 /*.down-desc li a{color:#333}*/
-*{font-size:14px;color:#333;margin:0;padding:0;}
+*{font-size:14px;margin:0;padding:0;}
 .flnews li{line-height:40px;font-size:16px;margin-left:5px;padding-left:20px;background:url("/static/images/dot.png") left center no-repeat}
 .flnews li a{color:#3333ff;font-size:16px;}
 .flnews{border-bottom:#e3e3e3 1px dotted;padding:10px 0;margin:0 12px}
@@ -100,7 +100,7 @@ p#reply_title{
 /*    padding: 0;*/
 /*}*/
 body{
-    margin-top: 70px!important;
+    margin-top: 60px!important;
 }
 /*div.blog:not(:last-child){*/
 /*    margin-bottom: 2em;*/
@@ -148,4 +148,78 @@ div.blog-more{
 .blog_header {
     overflow: hidden;
     padding: 1em 0em 0em 1em;
+}
+.wrapper-content {
+  padding: 10px 10px 10px;
+}
+.ibox {
+  clear: both;
+  margin-bottom: 25px;
+  margin-top: 0;
+  padding: 0;
+}
+.ibox-title {
+  -moz-border-bottom-colors: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  background-color: #ffffff;
+  border-color: #e7eaec;
+  border-image: none;
+  border-style: solid solid none;
+  border-width: 3px 0 0;
+  color: inherit;
+  margin-bottom: 0;
+  padding: 14px 15px 7px;
+  min-height: 48px;
+}
+.ibox-content {
+  background-color: #ffffff;
+  color: inherit;
+  padding: 15px 20px 20px 20px;
+  border-color: #e7eaec;
+  border-image: none;
+  border-style: solid solid none;
+  border-width: 1px 0;
+  clear: both;
+}
+.ibox-tools {
+  display: block;
+  float: none;
+  margin-top: 0;
+  position: relative;
+  padding: 0;
+  text-align: right;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 100;
+}
+h1 {
+  font-size: 30px;
+}
+h2 {
+  font-size: 24px;
+}
+h3 {
+  font-size: 16px;
+}
+h4 {
+  font-size: 14px;
+}
+h5 {
+  font-size: 12px;
+}
+h6 {
+  font-size: 10px;
+}
+h3,
+h4,
+h5 {
+  margin-top: 5px;
+  font-weight: 600;
 }

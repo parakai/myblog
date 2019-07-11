@@ -1,13 +1,18 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.views.generic.edit import CreateView
+from django.contrib.messages.views import SuccessMessageMixin
 from rest_framework import generics, mixins, viewsets
 from rest_framework.serializers import ValidationError
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 
 from .tree import TreeNodeSerializer
 from assets.models.node import Node
-from .serializers import node
+from assets.models.asset import Asset
+from .serializers import node, asset
 from .utils import get_object_or_none
+from . import forms
 
 
 def treeview(request):
@@ -62,7 +67,6 @@ class NodeChildrenApi(mixins.ListModelMixin, generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         instance = self.get_object()
         value = request.data.get("value")
-        print(value)
         _id = request.data.get('id') or None
         values = [child.value for child in instance.get_children()]
         if value in values:
@@ -98,3 +102,51 @@ class NodeAddChildrenApi(generics.UpdateAPIView):
 class NodeViewSet(viewsets.ModelViewSet):
     queryset = Node.objects.all()
     serializer_class = node.NodeSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        parent = instance.parent
+        parent.child_mark -= 1
+        parent.save()
+        return super().destroy(self, request, *args, **kwargs)
+
+
+class AssetViewSet(viewsets.ModelViewSet):
+    queryset = Asset.objects.all()
+    serializer_class = asset.AssetSerializer
+    # pagination_class = AssetPagination
+    pagination_class = LimitOffsetPagination
+    # filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+
+    filter_fields = ('assettype',)
+    # 搜索,=name表示精确搜索，也可以使用各种正则表达式
+    search_fields = ('name', 'ip', 'model')
+
+    ordering_fields = ('name', 'ip', 'model',)
+
+    def filter_node(self, queryset):
+        node_id = self.request.query_params.get("node_id")
+        if not node_id:
+            return queryset
+        node = get_object_or_404(Node, id=node_id)
+        if node.is_root():
+            return queryset
+        else:
+            queryset = queryset.filter(nodes__key__regex='^{}(:[0-9]+)*$'.format(node.key),)
+        return queryset
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        queryset = self.filter_node(queryset)
+        return queryset
+
+    def get_queryset(self):
+        queryset = super().get_queryset().distinct()
+        return queryset
+
+
+class AssetCreateView(SuccessMessageMixin, CreateView):
+    model = Asset
+    template_name = 'node/asset_create.html'
+    form_class = forms.AssetCreateForm
+    success_url = 'asset-list'

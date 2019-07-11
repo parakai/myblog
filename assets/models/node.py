@@ -10,6 +10,9 @@ class Node(models.Model):
     c_time = models.DateTimeField(auto_now_add=True)
 
     is_node = True
+    _assets_amount = None
+    _full_value_cache_key = '_NODE_VALUE_{}'
+    _assets_amount_cache_key = '_NODE_ASSETS_AMOUNT_{}'
 
     class Meta:
         verbose_name = "节点"
@@ -17,6 +20,21 @@ class Node(models.Model):
 
     def __str__(self):
         return self.value
+
+    @property
+    def name(self):
+        return self.value
+
+    @property
+    def assets_amount(self):
+        """
+        获取节点下所有资产数量速度太慢，所以需要重写，使用cache等方案
+        :return:
+        """
+        if self._assets_amount is not None:
+            return self._assets_amount
+        assets_amount = self.get_all_assets().count()
+        return assets_amount
 
     @property
     def parent_key(self):
@@ -110,8 +128,7 @@ class Node(models.Model):
     def as_tree_node(self):
         from ..tree import TreeNode
         from assets.serializers.node import NodeSerializer
-        # name = '{} ({})'.format(self.valdue, self.assets_amount)
-        name = self.value
+        name = '{} ({})'.format(self.value, self.assets_amount)
         node_serializer = NodeSerializer(instance=self)
         data = {
             'id': self.key,
@@ -119,7 +136,7 @@ class Node(models.Model):
             'title': name,
             'pId': self.parent_key,
             'isParent': True,
-            'open': True,
+            'open': self.is_root(),
             'meta': {
                 'node': node_serializer.data,
                 'type': 'node'
@@ -127,3 +144,15 @@ class Node(models.Model):
         }
         tree_node = TreeNode(**data)
         return tree_node
+
+    def get_all_assets(self):
+        from .asset import Asset
+        pattern = r'^{0}$|^{0}:'.format(self.key)
+        args = []
+        kwargs = {}
+        if self.is_root():
+            args = []
+        else:
+            kwargs['nodes__key__regex'] = pattern
+        assets = Asset.objects.filter(*args, **kwargs).distinct()
+        return assets

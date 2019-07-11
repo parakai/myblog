@@ -6,9 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}">
+    {% include '_head_css_js2.html' %}
+
+{#    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">#}
+{#    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" >#}
+{#    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">#}
+{#    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}">#}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block custom_css %}{% endblock %}
 </head>
@@ -27,8 +30,8 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'index' %}">首页</a></li>
                     <li><a href="{% url 'blog_list' %}">博客列表</a></li>
-                    <li><a href="{% url 'uploads' %}">下载</a></li>
-                    <li><a href="{% url 'tree' %}">树形结构</a></li>
+                    <li><a href="{% url 'uploads' %}">常用软件下载</a></li>
+                    <li><a href="{% url 'tree' %}">资产管理</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_authenticated %}
@@ -51,8 +54,8 @@
         </div>
     </div>
     {% block content %}{% endblock %}
-    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+{#    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>#}
+{#    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>#}
     {% block custom_js %}{% endblock %}
 </body>
 </html>

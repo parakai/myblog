@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'uploadfile',
     'rest_framework',  # 配置 rest_framework app
     'assets',
+    'bootstrap3',
 ]
 
 MIDDLEWARE = [
@@ -169,3 +170,21 @@ CKEDITOR_CONFIGS = {
         'resize_enabled': False,
     }
 }
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console':{
+#             'level':'DEBUG',
+#             'class':'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'propagate': True,
+#             'level':'DEBUG',
+#         },
+#     }
+# }
