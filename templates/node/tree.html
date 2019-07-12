@@ -246,13 +246,23 @@
                </div>
                <div class="mail-box-header">
                <div class="uc pull-left m-r-5"><a class="btn btn-sm btn-primary btn-create-asset">创建资产</a></div>
+                   <div class="html5buttons">
+                       <div class="dt-buttons btn-group">
+                           <a class="btn btn-default btn_import" data-toggle="modal" data-target="#asset_import_modal" tabindex="0">
+                               <span>导入</span>
+                           </a>
+                           <a class="btn btn-default btn_export" tabindex="0">
+                               <span>导出</span>
+                           </a>
+                       </div>
+                   </div>
                 <table class="table table-striped table-bordered table-hover" id="asset_list_table" width="100%">
                     <thead>
                         <tr>
                             <th class="text-center">序号</th>
                             <th class="text-center">主机名</th>
                             <th class="text-center">IP地址</th>
-                            <th class="text-center">操作系统</th>
+                            <th class="text-center">系统平台</th>
                             <th class="text-center">型号</th>
                             <th class="text-center">内存</th>
                         </tr>
@@ -289,7 +299,7 @@
     var current_node_id = null;
     var current_node = null;
     function initTree() {
-        var url = '{% url 'node-tree' %}';
+        var url = '{% url 'assets:node-tree' %}';
         var setting = {
             view: {
                 dblClickExpand: false,
@@ -334,7 +344,7 @@
                   targets: 0,
                   orderable: false,
                   searchable: false,}]),
-            ajax_url: "{% url "asset-list" %}",
+            ajax_url: "{% url "assets:asset-list" %}",
             columns: [{data: null, orderable: false}, {data: "name"}, {data: "ip"},
                     {data: "platform"},{data: "model", orderable: false},
                     {data: "memory", orderable: false}],
@@ -349,7 +359,7 @@
         })
         var data ={"nodes": treeNodesIds};
         $.ajax({
-            url: '{% url 'node-add-children' pk=DEFAULT_PK %}'.replace("{{ DEFAULT_PK }}", targetNode.meta.node.id),
+            url: '{% url 'assets:node-add-children' pk=DEFAULT_PK %}'.replace("{{ DEFAULT_PK }}", targetNode.meta.node.id),
             type: "PUT",
             data: JSON.stringify(data),
             dataType: "json",
@@ -393,7 +403,7 @@
         if (!parentNode){
             return
         }
-        var url = "{% url 'node-children' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", parentNode.meta.node.id);
+        var url = "{% url 'assets:node-children' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", parentNode.meta.node.id);
         $.post(url,  {}, function (data, status){
             if (status === "success") {
                 var newNode = {
@@ -440,7 +450,7 @@
         if(isCancel){
             return;
         }
-        var url = "{% url 'node-detail' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", current_node_id);
+        var url = "{% url 'assets:node-detail' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", current_node_id);
         var data = {"value": treeNode.name};
         $.ajax({
             url: url,
@@ -470,7 +480,7 @@
             alert("存在子节点不能删除！");
             return;
         }else {
-            var url = "{% url 'node-detail' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", current_node_id);
+            var url = "{% url 'assets:node-detail' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", current_node_id);
             $.ajax({
                 url: url,
                 method: "DELETE",
@@ -508,7 +518,7 @@
         initTree();
     })
     .on('click', '.btn-create-asset', function () {
-        var url = "{% url 'asset-create' %}";
+        var url = "{% url 'assets:assets-create' %}";
         if (current_node_id) {
             url += "?node_id=" + current_node_id;
         }

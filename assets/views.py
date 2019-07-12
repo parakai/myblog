@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
+from django.views.generic import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
 from rest_framework import generics, mixins, viewsets
 from rest_framework.serializers import ValidationError
@@ -11,7 +13,7 @@ from .tree import TreeNodeSerializer
 from assets.models.node import Node
 from assets.models.asset import Asset
 from .serializers import node, asset
-from .utils import get_object_or_none
+from .utils import get_object_or_none, create_success_msg
 from . import forms
 
 
@@ -149,4 +151,21 @@ class AssetCreateView(SuccessMessageMixin, CreateView):
     model = Asset
     template_name = 'node/asset_create.html'
     form_class = forms.AssetCreateForm
-    success_url = 'asset-list'
+    success_url = reverse_lazy('assets:assets-list')
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        node_id = self.request.GET.get("node_id")
+        if node_id:
+            node = get_object_or_none(Node, id=node_id)
+        else:
+            node = Node.root()
+        form["nodes"].initial = node
+        return form
+
+    def get_success_message(self, cleaned_data):
+        return create_success_msg % ({"name": cleaned_data["name"]})
+
+
+class AssetListView(TemplateView):
+    template_name = 'node/tree.html'

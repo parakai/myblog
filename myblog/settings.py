@@ -175,16 +175,27 @@ CKEDITOR_CONFIGS = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
 #     'handlers': {
-#         'console':{
-#             'level':'DEBUG',
-#             'class':'logging.StreamHandler',
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
 #         },
 #     },
 #     'loggers': {
 #         'django.db.backends': {
 #             'handlers': ['console'],
 #             'propagate': True,
-#             'level':'DEBUG',
+#             'level': 'DEBUG',
 #         },
 #     }
 # }
+
+# Django bootstrap3 setting, more see http://django-bootstrap3.readthedocs.io/en/latest/settings.html
+BOOTSTRAP3 = {
+    'horizontal_label_class': 'col-md-2',
+    # Field class to use in horizontal forms
+    'horizontal_field_class': 'col-md-9',
+    # Set placeholder attributes to label if no placeholder is provided
+    'set_placeholder': False,
+    'success_css_class': '',
+    'required_css_class': 'required',
+}

@@ -2,7 +2,6 @@ import uuid
 
 from django.db import models
 from django.contrib.auth.models import User
-
 from .node import Node
 
 
@@ -56,20 +55,15 @@ class Asset(models.Model):
         (4, "交换机")
     )
 
-    ASSETENV_CHOICSE = (
-        (1, "生产"),
-        (2, "测试"),
-    )
-
     appinfo = models.ForeignKey(AppInfo, verbose_name="应用系统", null=True, blank=True, on_delete=models.CASCADE)
-    name = models.CharField("主机名", max_length=100, null=True)
+    name = models.CharField("主机名", max_length=100)
     ip = models.CharField("IP地址", max_length=128, db_index=True)
     os = models.ForeignKey(OperatingSystem, verbose_name="操作系统", null=True, blank=True, on_delete=models.CASCADE)
     port = models.IntegerField("端口", default=22, null=True)
     platform = models.CharField("系统平台", max_length=128, choices=PLATFORM_CHOICES, default='Linux')
     assettype = models.IntegerField("资产类型", choices=ASSETTYPE_CHOICES, default=1)
-    nodes = models.ForeignKey(Node, verbose_name="节点", default=default_node, related_name='assets', on_delete=models.CASCADE)
-    is_formal = models.BooleanField("是否正式环境", choices=ASSETENV_CHOICSE, default=False)
+    nodes = models.ForeignKey(Node, default=default_node, related_name='assets', on_delete=models.CASCADE)
+    is_formal = models.BooleanField("是否正式环境", default=True)
 
     model = models.CharField("资产型号", max_length=54, null=True, blank=True)
     cpu_model = models.CharField("CPU model", max_length=64, null=True, blank=True)
@@ -82,7 +76,7 @@ class Asset(models.Model):
     created_by = models.ForeignKey(User, verbose_name="创建人", on_delete=models.CASCADE)
     created_time = models.DateTimeField("添加时间", auto_now_add=True)
     updated_time = models.DateTimeField("修改时间", auto_now=True)
-    comment = models.CharField("备注", max_length=255, default='', blank=True)
+    comment = models.TextField("备注", max_length=255, default='', blank=True)
 
     class Meta:
         verbose_name = "资产"

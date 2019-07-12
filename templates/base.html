@@ -31,7 +31,7 @@
                     <li><a href="{% url 'index' %}">首页</a></li>
                     <li><a href="{% url 'blog_list' %}">博客列表</a></li>
                     <li><a href="{% url 'uploads' %}">常用软件下载</a></li>
-                    <li><a href="{% url 'tree' %}">资产管理</a></li>
+                    <li><a href="{% url 'assets:tree' %}">资产管理</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_authenticated %}

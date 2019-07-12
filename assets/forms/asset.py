@@ -1,6 +1,7 @@
-from django.forms import ModelForm
 from django import forms
-from ..models import Asset
+from django.forms import ModelForm
+from ..models.asset import Asset
+from ..utils import OrgModelForm
 
 
 class AssetCreateForm(ModelForm):
@@ -8,7 +9,8 @@ class AssetCreateForm(ModelForm):
         model = Asset
         fields = [
             'name', 'ip', 'os', 'port',  'comment', 'created_by',
-            'nodes', 'is_formal', 'model', 'platform', 'appinfo', 'assettype'
+            'nodes', 'is_formal', 'model', 'platform', 'appinfo', 'assettype',
+            'cpu_model', 'cpu_count', 'cpu_cores', 'memory', 'disk_total'
 
         ]
         widgets = {

@@ -11,12 +11,10 @@ class Node(models.Model):
 
     is_node = True
     _assets_amount = None
-    _full_value_cache_key = '_NODE_VALUE_{}'
-    _assets_amount_cache_key = '_NODE_ASSETS_AMOUNT_{}'
 
     class Meta:
         verbose_name = "节点"
-        ordering = ['id']
+        ordering = ['key']
 
     def __str__(self):
         return self.value
@@ -27,14 +25,22 @@ class Node(models.Model):
 
     @property
     def assets_amount(self):
-        """
-        获取节点下所有资产数量速度太慢，所以需要重写，使用cache等方案
-        :return:
-        """
         if self._assets_amount is not None:
             return self._assets_amount
         assets_amount = self.get_all_assets().count()
         return assets_amount
+
+    def get_all_assets(self):
+        from .asset import Asset
+        pattern = r'^{0}$|^{0}:'.format(self.key)
+        args = []
+        kwargs = {}
+        if self.is_root():
+            args = []
+        else:
+            kwargs['nodes__key__regex'] = pattern
+        assets = Asset.objects.filter(*args, **kwargs).distinct()
+        return assets
 
     @property
     def parent_key(self):
@@ -144,15 +150,3 @@ class Node(models.Model):
         }
         tree_node = TreeNode(**data)
         return tree_node
-
-    def get_all_assets(self):
-        from .asset import Asset
-        pattern = r'^{0}$|^{0}:'.format(self.key)
-        args = []
-        kwargs = {}
-        if self.is_root():
-            args = []
-        else:
-            kwargs['nodes__key__regex'] = pattern
-        assets = Asset.objects.filter(*args, **kwargs).distinct()
-        return assets
