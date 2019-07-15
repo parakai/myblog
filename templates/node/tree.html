@@ -210,10 +210,7 @@
         {#body {#}
         {#  height: 100%;#}
         {#}#}
-        /* BACKGROUNDS */
-        .gray-bg {
-          background-color: #f3f3f4;
-        }
+
       #page-wrapper {
         position: inherit;
         margin: 0 0 0 0;
@@ -340,12 +337,19 @@
     function initTale() {
         var options ={
             ele: $('#asset_list_table'),
-            columnDefs: ([{
-                  targets: 0,
+            columnDefs: [
+                { targets: 0,
                   orderable: false,
-                  searchable: false,}]),
+                  searchable: false,},
+                { targets: 1, createdCell: function (td, cellData, rowData) {
+                    cellData = htmlEscape(cellData);
+                    {% url 'assets:assets-detail' pk=DEFAULT_PK as the_url %}
+                    var detail_btn = '<a href="{{ the_url }}">' + cellData + '</a>';
+                    $(td).html(detail_btn.replace('{{ DEFAULT_PK }}', rowData.id));
+                }},
+            ],
             ajax_url: "{% url "assets:asset-list" %}",
-            columns: [{data: null, orderable: false}, {data: "name"}, {data: "ip"},
+            columns: [{data: null, orderable: false}, {data: "hostname"}, {data: "ip"},
                     {data: "platform"},{data: "model", orderable: false},
                     {data: "memory", orderable: false}],
         };
@@ -440,7 +444,7 @@
         current_node_id = treeNode.meta.node.id;
         zTree.expandNode(current_node, true);
         var url = asset_table.ajax.url();
-        console.log(current_node_id);
+        {#console.log(current_node_id);#}
         url = setUrlParam(url, "node_id", current_node_id);
         asset_table.ajax.url(url);
         asset_table.ajax.reload();

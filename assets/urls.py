@@ -16,4 +16,5 @@ urlpatterns = [
     path('<uuid:pk>/children/add/', views.NodeAddChildrenApi.as_view(), name='node-add-children'),
     path('asset/create/', views.AssetCreateView.as_view(), name='assets-create'),
     path('asset/list/', views.AssetListView.as_view(), name='assets-list'),
+    path('asset/<uuid:pk>/', views.AssetDetailView.as_view(), name='assets-detail'),
 ]

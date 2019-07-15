@@ -5,7 +5,7 @@ from .models import asset
 @admin.register(asset.Asset)
 class AssetAdmin(admin.ModelAdmin):
     '''资产信息'''
-    list_display = ['appinfo', 'name', 'ip', 'platform',  'port', 'assettype', 'is_formal', 'model',
+    list_display = ['appinfo', 'hostname', 'ip', 'platform',  'port', 'assettype', 'is_formal', 'model',
                     'cpu_model', 'cpu_count', 'memory', 'disk_total', 'created_by']
 
 

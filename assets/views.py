@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
 from django.views.generic import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
 from rest_framework import generics, mixins, viewsets
@@ -169,3 +170,9 @@ class AssetCreateView(SuccessMessageMixin, CreateView):
 
 class AssetListView(TemplateView):
     template_name = 'node/tree.html'
+
+
+class AssetDetailView(DetailView):
+    model = Asset
+    context_object_name = 'asset'
+    template_name = 'node/asset_detail.html'

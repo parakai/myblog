@@ -55,8 +55,9 @@ class Asset(models.Model):
         (4, "交换机")
     )
 
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     appinfo = models.ForeignKey(AppInfo, verbose_name="应用系统", null=True, blank=True, on_delete=models.CASCADE)
-    name = models.CharField("主机名", max_length=100)
+    hostname = models.CharField("主机名", max_length=100)
     ip = models.CharField("IP地址", max_length=128, db_index=True)
     os = models.ForeignKey(OperatingSystem, verbose_name="操作系统", null=True, blank=True, on_delete=models.CASCADE)
     port = models.IntegerField("端口", default=22, null=True)
@@ -81,6 +82,7 @@ class Asset(models.Model):
     class Meta:
         verbose_name = "资产"
         verbose_name_plural = verbose_name
+        ordering = ['ip']
 
     def __str__(self):
         return '{0.name}(0.ip)'.format(self)

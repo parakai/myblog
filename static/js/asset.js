@@ -175,3 +175,8 @@ function setUrlParam(url, name, value) {
     }
     return url
 }
+function htmlEscape ( d ) {
+    return typeof d === 'string' ?
+        d.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') :
+        d;
+}

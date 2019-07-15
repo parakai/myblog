@@ -8,7 +8,7 @@ class AssetCreateForm(ModelForm):
     class Meta:
         model = Asset
         fields = [
-            'name', 'ip', 'os', 'port',  'comment', 'created_by',
+            'hostname', 'ip', 'os', 'port',  'comment', 'created_by',
             'nodes', 'is_formal', 'model', 'platform', 'appinfo', 'assettype',
             'cpu_model', 'cpu_count', 'cpu_cores', 'memory', 'disk_total'
 

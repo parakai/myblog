@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap3 %}
+{% block title %}修改资产{% endblock %}
+{% block custom_css %}
+    <link href="{% static 'select2/select2.min.css' %}" rel="stylesheet">
+    <script src="{% static 'select2/select2.full.min.js' %}"></script>
+{#    <script type="text/javascript" src="{% static 'js/pwstrength-bootstrap.js' %}"></script>#}
+{% endblock %}
+{% block content %}
+<div id="wrapper">
+    <div id="page-wrapper" class="gray-bg">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="panel-options">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="{% url 'assets:assets-detail' pk=asset.id %}" class="text-center"><i class="fa fa-laptop"></i> 资产详情 </a>
+                                </li>
+                                <li>
+                                    <a href="" class="text-center"><i class="fa fa-bar-chart-o"></i> 管理用户列表 </a>
+                                </li>
+                                <li class="pull-right">
+                                    <a class="btn btn-outline btn-default" href="">
+                                        <i class="fa fa-edit"></i>更新</a>
+                                </li>
+                                <li class="pull-right">
+                                    <a class="btn btn-outline btn-danger btn-delete-asset">
+                                        <i class="fa fa-trash-o"></i>删除
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content">
+                            <div class="col-sm-8" style="padding-left: 0">
+                                <div class="ibox float-e-margins">
+                                    <div class="ibox-title">
+                                        <span class="label"><b>{{ asset.hostname }}</b></span>
+                                        <div class="ibox-tools">
+                                            <a class="collapse-link">
+                                                <i class="fa fa-chevron-up"></i>
+                                            </a>
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                                <i class="fa fa-wrench"></i>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-user">
+                                            </ul>
+                                            <a class="close-link">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table class="table">
+                                            <tbody>
+                                            <tr class="no-borders-tr">
+                                                <td width="20%">主机名:</td>
+                                                <td><b>{{ asset.hostname }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>IP:</td>
+                                                <td><b>{{ asset.ip }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>端口:</td>
+                                                <td><b>{{ asset.port }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>所属应用:</td>
+                                                <td><b>{{ asset.appinfo|default:"" }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>资产类型:</td>
+                                                <td><b>{{ asset.get_assettype_display|default:"" }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>系统平台:</td>
+                                                <td><b>{{ asset.platform|default:"" }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>操作系统:</td>
+                                                <td><b>{{ asset.os.name|default:"" }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>资产型号:</td>
+                                                <td><b>{{ asset.model|default:"" }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>CPU:</td>
+                                                <td><b>{{ asset.cpu_model|default:"" }} {{ asset.cpu_count|default:"" }}*{{ asset.cpu_cores|default:"" }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>内存:</td>
+                                                <td><b>{{ asset.memory|default:"" }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>硬盘:</td>
+                                                <td><b>{{ asset.disk_total|default:"" }}</b></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>是否生产环境:</td>
+                                                <td><b>{{ asset.is_formal|yesno:"Yes,No" }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>创建人:</td>
+                                                <td><b>{{ asset.created_by }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>创建日期:</td>
+                                                <td><b>{{ asset.created_time }}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>备注:</td>
+                                                <td><b>{{ asset.comment }}</b></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if user.is_authenticated %}
+                            <div class="col-sm-4" style="padding-left: 0;padding-right: 0">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        <i class="fa fa-info-circle"></i> 快速修改
+                                    </div>
+                                    <div class="panel-body">
+                                        <table class="table">
+                                            <tbody>
+                                            <tr class="no-borders-tr">
+                                              <td width="50%">是否测试环境:</td>
+                                                <td>
+                                                  <span class="pull-right">
+                                                      <div class="switch">
+                                                          <div class="onoffswitch">
+                                                              <input type="checkbox" {% if asset.is_formal %} checked {% endif %}  class="onoffswitch-checkbox" id="is_formal">
+                                                              <label class="onoffswitch-label" for="is_active">
+                                                                  <span class="onoffswitch-inner"></span>
+                                                                  <span class="onoffswitch-switch"></span>
+                                                              </label>
+                                                          </div>
+                                                      </div>
+                                                  </span>
+                                              </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        <i class="fa fa-info-circle"></i> 分组管理
+                                    </div>
+                                    <div class="panel-body">
+                                        <input class="easyui-combotree" data-options="{% url 'assets:node-tree' %}',label:'Select Node:',labelPosition:'top'" style="width:100%">
+                                    </div>
+                                </div>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
