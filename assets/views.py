@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -16,6 +16,15 @@ from assets.models.asset import Asset, UserProfileManager
 from .serializers import node, asset, asset_user
 from .utils import get_object_or_none, create_success_msg, update_success_msg
 from . import forms
+from django.views.decorators.csrf import csrf_exempt
+
+
+@csrf_exempt
+def report(request):
+    if request.method == "POST":
+        asset_data = request.POST.get('asset_data')
+        print(asset_data)
+        return HttpResponse("成功收到数据！")
 
 
 def treeview(request):

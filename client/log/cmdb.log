@@ -1,0 +1,5 @@
+发送时间：2019-07-17 21:21:19 	 服务器地址：http://127.0.0.1:8000/assets/report/ 	 返回结果：发送失败   错误原因：  <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it> 
+发送时间：2019-07-17 21:24:44 	 服务器地址：http://127.0.0.1:8000/assets/report/ 	 返回结果：发送失败   错误原因：  HTTP Error 404: Not Found 
+发送时间：2019-07-17 21:39:47 	 服务器地址：http://127.0.0.1:8000/assets/report/ 	 返回结果：发送失败   错误原因：  HTTP Error 403: Forbidden 
+发送时间：2019-07-17 21:40:53 	 服务器地址：http://127.0.0.1:8000/assets/report/ 	 返回结果：成功收到数据！ 
+发送时间：2019-07-17 21:48:12 	 服务器地址：http://127.0.0.1:8000/assets/report/ 	 返回结果：成功收到数据！ 
