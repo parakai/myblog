@@ -85,7 +85,7 @@ class Asset(models.Model):
         ordering = ['ip']
 
     def __str__(self):
-        return '{0.name}(0.ip)'.format(self)
+        return '{0.hostname}({0.ip})'.format(self)
 
     def support_ansible(self):
         if self.platform in ("Windows", "Other"):

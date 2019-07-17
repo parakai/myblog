@@ -20,10 +20,10 @@
                                     <a href="{% url 'assets:assets-detail' pk=asset.id %}" class="text-center"><i class="fa fa-laptop"></i> 资产详情 </a>
                                 </li>
                                 <li>
-                                    <a href="" class="text-center"><i class="fa fa-bar-chart-o"></i> 管理用户列表 </a>
+                                    <a href="{% url 'assets:asset-user-list' pk=asset.id %}" class="text-center"><i class="fa fa-bar-chart-o"></i> 管理用户列表 </a>
                                 </li>
                                 <li class="pull-right">
-                                    <a class="btn btn-outline btn-default" href="">
+                                    <a class="btn btn-outline btn-default" href="{% url 'assets:assets-update' pk=asset.id %}">
                                         <i class="fa fa-edit"></i>更新</a>
                                 </li>
                                 <li class="pull-right">
@@ -156,7 +156,32 @@
                                         <i class="fa fa-info-circle"></i> 分组管理
                                     </div>
                                     <div class="panel-body">
-                                        <input class="easyui-combotree" data-options="{% url 'assets:node-tree' %}',label:'Select Node:',labelPosition:'top'" style="width:100%">
+                                       <table class="table group_edit" id="add-asset2group">
+                                        <tbody>
+                                            <form>
+                                            <tr>
+                                                <td colspan="2" class="no-borders">
+                                                    <select data-placeholder="节点" id="groups_selected" class="select2 groups" style="width: 100%" tabindex="4">
+                                                        {% for node in nodes_remain %}
+                                                        <option value="{{ node.id }}" id="opt_{{ node.id }}" >{{ node }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" class="no-borders">
+                                                    <button type="button" class="btn btn-info btn-sm" id="btn-update-nodes">确认</button>
+                                                </td>
+                                            </tr>
+                                        </form>
+                                        <tr>
+                                          <td ><b class="bdg_node" data-gid={{ asset.nodes_id }}>{{ asset.nodes }}</b></td>
+                                          <td>
+                                              <button class="btn btn-danger pull-right btn-xs btn-leave-node" type="button"><i class="fa fa-minus"></i></button>
+                                          </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                     </div>
                                 </div>
                             {% endif %}
@@ -168,4 +193,13 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block custom_js %}
+<script>
+$(document.ready(function () {
+}))
+.on('click', '.btn-delete-asset', function () {
+
+})
+</script>
 {% endblock %}

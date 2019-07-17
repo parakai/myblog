@@ -20,3 +20,4 @@ class OrgModelForm(ModelForm):
 
 
 create_success_msg = "%(name)s was created successfully"
+update_success_msg = "%(name)s was updated successfully"

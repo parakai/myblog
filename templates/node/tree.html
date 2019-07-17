@@ -19,208 +19,29 @@
                 list-style: none;
                 background-clip: padding-box;
              }
-            .dataTables_wrapper .dataTables_processing {
-                opacity: .9;
-                border: none;
-            }
-            div#rMenu li{
-                margin: 1px 0;
-                cursor: pointer;
-                list-style: none outside none;
-             }
-            .dropdown a:hover {
-                background-color: #f1f1f1
-            }
-            .dropdown-menu {
-                border: medium none;
-                border-radius: 3px;
-                box-shadow: 0 0 3px rgba(86, 96, 117, 0.7);
-                display: none;
-                float: left;
-                font-size: 12px;
-                left: 0;
-                list-style: none outside none;
-                padding: 0;
-                position: absolute;
-                text-shadow: none;
-                top: 100%;
-                z-index: 1000;
-                }
-            .dropdown-menu > li > a {
-              border-radius: 3px;
-              color: inherit;
-              line-height: 25px;
-              margin: 4px;
-              text-align: left;
-              font-weight: normal;
-            }
-            .dropdown-menu > li > a.font-bold {
-              font-weight: 600;
-            }
-            div.dataTables_wrapper div.dataTables_filter,
-            .dataTables_length {
-                float: right !important;
-            }
-            div.dataTables_wrapper div.dataTables_filter {
-                margin-left: 15px;
-            }
-            div.btn-group  select {
-              width: 75px;
-              display: inline-block;
-            }
-            div.mail-box-header span {
-                font-size: 90%;
-            }
-            {#.form-control{#}
-            {#    height: 30px;#}
-            {#}#}
-            .form-control,
-            .single-line {
-              background-color: #FFFFFF;
-              background-image: none;
-              border: 1px solid #e5e6e7;
-              border-radius: 1px;
-              color: inherit;
-              display: block;
-              padding: 6px 12px;
-              transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
-              width: 100%;
-              font-size: 14px;
-            }
-            .form-control:focus,
-            .single-line:focus {
-              border-color: #1ab394 !important;
-            }
-            .table {
-            margin: 0 auto;
-            }
-            .mail-box-header {
-              background-color: #ffffff;
-              border: 1px solid #e7eaec;
-              {#border-bottom: 0;#}
-              padding: 5px 20px 5px 20px;
-            }
-            .mail-box-header h2 {
-              margin-top: 0;
-            }
-            .tree-toggle {
-                position: absolute;
-                left: 0;
-                top: 1px;
-                height: 100%;
-            }
-            .tree-toggle-btn {
-                width: 12px;
-                text-align: center;
-                padding: 5px 0;
-            }
-            .btn-primary {
-              background-color: #1ab394;
-              border-color: #1ab394;
-              color: #FFFFFF;
-            }
-        /* WRAPPERS */
-            #wrapper {
-              width: 100%;
-              overflow-x: hidden;
-            }
-            .wrapper {
-              padding: 0 10px;
-            }
 
-
-
-        .ibox.collapsed .ibox-content {
-          display: none;
-        }
-        .ibox.collapsed .fa.fa-chevron-up:before {
-          content: "\f078";
-        }
-        .ibox.collapsed .fa.fa-chevron-down:before {
-          content: "\f077";
-        }
-        .ibox:after,
-        .ibox:before {
-          display: table;
-        }
-        .ibox-content {
-          clear: both;
-        }
-        .mailbox-content {
-          background: none;
-          border: none;
-          padding: 10px;
-        }
-        .file-manager {
-          list-style: none outside none;
-          margin: 0;
-          padding: 0;
-        }
-        /* DATATABLES */
-        table.dataTable thead .sorting,
-        table.dataTable thead .sorting_asc:after,
-        table.dataTable thead .sorting_desc,
-        table.dataTable thead .sorting_asc_disabled,
-        table.dataTable thead .sorting_desc_disabled {
-          background: transparent;
-        }
-        .dataTables_wrapper {
-          padding-bottom: 30px;
-        }
-        /* TABLES */
-        .table-bordered {
-          border: 1px solid #EBEBEB;
-        }
-        .table-bordered > thead > tr > th,
-        .table-bordered > thead > tr > td {
-          /*background-color: #F5F5F6;*/
-          border-bottom-width: 1px;
-        }
-        .table-bordered > thead > tr > th,
-        .table-bordered > tbody > tr > th,
-        .table-bordered > tfoot > tr > th,
-        .table-bordered > thead > tr > td,
-        .table-bordered > tbody > tr > td,
-        .table-bordered > tfoot > tr > td {
-          border: 1px solid #e7e7e7;
-        }
-        .table > thead > tr > th {
-          border-bottom: 1px solid #DDDDDD;
-          vertical-align: bottom;
-        }
-        .table > thead > tr > th,
-        .table > tbody > tr > th,
-        .table > tfoot > tr > th,
-        .table > thead > tr > td,
-        .table > tbody > tr > td,
-        .table > tfoot > tr > td {
-          border-top: 1px solid #e7eaec;
-          line-height: 1.42857;
-          padding: 8px;
-          vertical-align: top;
-        }
-        {#body {#}
-        {#  font-family: "open sans", "Helvetica Neue", "微软雅黑", Helvetica, Arial, sans-serif;#}
-          {#background-color: #2f4050;#}
-        {#  font-size: 14px;#}
-        {#  color: #676a6c;#}
-        {#  overflow-x: hidden;#}
-        {#}#}
-        {#html,#}
-        {#body {#}
-        {#  height: 100%;#}
-        {#}#}
-
-      #page-wrapper {
-        position: inherit;
-        margin: 0 0 0 0;
-        min-height: 600px;
-      }
         </style>
 
 {% endblock %}
 {% block content %}
 <div id="wrapper">
+{#    <div class="navbar-default sidebar" role="navigation">#}
+{#        <div class="sidebar-nav navbar-collapse">#}
+{#            <ul class="nav" id="side-menu">#}
+{#                <li id="assets" class="active">#}
+{#                    <a>#}
+{#                        <i class="fa fa-inbox" style="width: 14px"></i> <span class="nav-label">资产管理</span><span class="fa arrow"></span>#}
+{#                    </a>#}
+{#                    <ul class="nav nav-second-level">#}
+{#                        <li id="asset"><a href="{% url 'assets:assets-list' %}">资产列表</a></li>#}
+{#                        <li id="domain"><a href="">网域列表</a></li>#}
+{#                        <li id="admin-user"><a href="">管理用户</a></li>#}
+{#                        <li id="system-user"><a href="">系统用户</a></li>#}
+{#                    </ul>#}
+{#                </li>#}
+{#            </ul>#}
+{#        </div>#}
+{#    </div>#}
     <div id="page-wrapper" class="gray-bg">
     <div class="wrapper wrapper-content">
        <div class="row">
@@ -262,6 +83,7 @@
                             <th class="text-center">系统平台</th>
                             <th class="text-center">型号</th>
                             <th class="text-center">内存</th>
+                            <th class="text-center">动作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -274,7 +96,6 @@
 
     <div id="rMenu">
         <ul class="dropdown-menu">
-            <li class="divider"></li>
             <li id="m_create" tabindex="-1" onclick="addTreeNode();"><a><i class="fa fa-plus-square-o"></i>新建节点</a></li>
             <li id="m_del" tabindex="-1" onclick="editTreeNode();"><a><i class="fa fa-pencil-square-o"></i>重命名节点</a></li>
             <li id="m_del" tabindex="-1" onclick="removeTreeNode();"><a><i class="fa fa-minus-square"></i>删除节点</a></li>
@@ -347,11 +168,16 @@
                     var detail_btn = '<a href="{{ the_url }}">' + cellData + '</a>';
                     $(td).html(detail_btn.replace('{{ DEFAULT_PK }}', rowData.id));
                 }},
+            {targets: 6, createdCell: function (td, cellData, rowData) {
+                var update_btn = '<a href="{% url "assets:assets-update" pk=DEFAULT_PK %}" class="btn btn-xs btn-info">更新</a>'.replace("{{ DEFAULT_PK }}", cellData);
+                var del_btn = '<a class="btn btn-xs btn-danger m-l-xs btn_asset_delete" data-uid="{{ DEFAULT_PK }}">删除</a>'.replace('{{ DEFAULT_PK }}', cellData);
+                $(td).html(update_btn + del_btn)
+            }}
             ],
             ajax_url: "{% url "assets:asset-list" %}",
             columns: [{data: null, orderable: false}, {data: "hostname"}, {data: "ip"},
                     {data: "platform"},{data: "model", orderable: false},
-                    {data: "memory", orderable: false}],
+                    {data: "memory", orderable: false}, {data: "id", orderable: false }],
         };
         asset_table = assetserver.initServerSideDataTable(options);
         return asset_table;
@@ -368,9 +194,6 @@
             data: JSON.stringify(data),
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            beforeSend: function(xhr, settings){
-                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); // 这句是关键
-            },
         });
     };
     function OnRightClick(event, treeId, treeNode) {
@@ -384,7 +207,7 @@
     }
     function showRMenu(type, x, y) {
         $("#rMenu ul").show();
-
+        {#y -= 20;#}
         y += document.body.scrollTop;
         x += document.body.scrollLeft;
         rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
@@ -462,9 +285,6 @@
             data: JSON.stringify(data),
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            beforeSend: function(xhr, settings){
-                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}"); // 这句是关键
-            },
             success: function () {
                 treeNode.name = treeNode.name + ' (' + treeNode.meta.node.assets_amount + ')';
                 zTree.updateNode(treeNode);
@@ -520,6 +340,7 @@
     $(document).ready(function () {
         initTale();
         initTree();
+        {#$("#side-menu").metisMenu();#}
     })
     .on('click', '.btn-create-asset', function () {
         var url = "{% url 'assets:assets-create' %}";
@@ -528,5 +349,16 @@
         }
         window.open(url, '_self');
     })
+    .on('click', '.btn_asset_delete', function () {
+        var $this = $(this);
+        var $data_table = $("#asset_list_table").DataTable();
+        var name = $(this).closest("tr").find(":nth-child(2)").children('a').html();
+        var uid = $this.data('uid');
+        var the_url = '{% url "assets:asset-detail" pk=DEFAULT_PK %}'.replace("{{ DEFAULT_PK }}", uid);
+        objectDelete($this, name, the_url);
+        setTimeout( function () {
+            $data_table.ajax.reload();
+        }, 3000);
+})
     </script>
 {% endblock %}

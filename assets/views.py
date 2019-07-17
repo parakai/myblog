@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -12,9 +12,9 @@ from rest_framework.pagination import PageNumberPagination, LimitOffsetPaginatio
 
 from .tree import TreeNodeSerializer
 from assets.models.node import Node
-from assets.models.asset import Asset
-from .serializers import node, asset
-from .utils import get_object_or_none, create_success_msg
+from assets.models.asset import Asset, UserProfileManager
+from .serializers import node, asset, asset_user
+from .utils import get_object_or_none, create_success_msg, update_success_msg
 from . import forms
 
 
@@ -176,3 +176,43 @@ class AssetDetailView(DetailView):
     model = Asset
     context_object_name = 'asset'
     template_name = 'node/asset_detail.html'
+
+    def get_context_data(self, **kwargs):
+        nodes_remain = Node.objects.exclude(assets=self.object)
+        context = {
+            'nodes_remain': nodes_remain,
+        }
+        kwargs.update(context)
+        return super().get_context_data(**kwargs)
+
+
+class AssetUserListView(DetailView):
+    model = Asset
+    context_object_name = 'asset'
+    template_name = 'node/asset_asset_user_list.html'
+
+
+class AssetUpdateView(SuccessMessageMixin, UpdateView):
+    model = Asset
+    form_class = forms.AssetCreateForm
+    template_name = 'node/asset_update.html'
+    success_url = reverse_lazy('assets:assets-list')
+
+    def get_success_message(self, cleaned_data):
+        return update_success_msg % ({"name": cleaned_data["hostname"]})
+
+
+class AssetUserViewSet(viewsets.GenericViewSet):
+    pagination_class = LimitOffsetPagination
+    serializer_class = asset_user.AssetUserSerializer
+    http_method_names = ['get', 'post']
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def get_queryset(self):
+        asset_id = self.request.GET.get('asset_id')
+        asset_user = UserProfileManager.objects.filter(asset=asset_id)
+        return asset_user

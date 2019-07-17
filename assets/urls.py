@@ -7,6 +7,7 @@ app_name = 'assets'
 router = DefaultRouter()
 router.register('nodes', views.NodeViewSet, 'node')
 router.register('assets', views.AssetViewSet, 'asset')
+router.register('asset-user', views.AssetUserViewSet, 'asset-user-api')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -17,4 +18,6 @@ urlpatterns = [
     path('asset/create/', views.AssetCreateView.as_view(), name='assets-create'),
     path('asset/list/', views.AssetListView.as_view(), name='assets-list'),
     path('asset/<uuid:pk>/', views.AssetDetailView.as_view(), name='assets-detail'),
+    path('asset/<uuid:pk>/update/', views.AssetUpdateView.as_view(), name='assets-update'),
+    path('asset/<uuid:pk>/asset-user/', views.AssetUserListView.as_view(), name='asset-user-list')
 ]

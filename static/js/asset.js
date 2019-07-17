@@ -29,6 +29,35 @@ function checkAll(id, name){
         }
     }
 }
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                // break;
+            }
+        }
+    }
+    return cookieValue;
+}
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function setAjaxCSRFToken() {
+    var csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+}
 var assetserver = {};
 assetserver.checked = false;
 assetserver.selected = {};
@@ -154,6 +183,69 @@ assetserver.initServerSideDataTable =function (options) {
     });
     return table;
 }
+assetserver.initDataTable = function (options) {
+      var ele = options.ele || $('.dataTable');
+      var columnDefs = [
+          {
+              targets: 0,
+              orderable: false,
+              createdCell: function (td, cellData) {
+                  $(td).html('<input type="checkbox" class="text-center ipt_check" id=99991937>'.replace('99991937', cellData));
+              }
+          },
+          {className: 'text-center', render: $.fn.dataTable.render.text(), targets: '_all'}
+      ];
+      columnDefs = options.columnDefs ? options.columnDefs.concat(columnDefs) : columnDefs;
+      var select = {
+                style: 'multi',
+                selector: 'td:first-child'
+          };
+      var table = ele.DataTable({
+            pageLength: options.pageLength || 15,
+            dom: options.dom || '<"#uc.pull-left">flt<"row m-t"<"col-md-8"<"#op.col-md-6"><"col-md-6 text-center"i>><"col-md-4"p>>',
+            order: options.order || [],
+            buttons: [],
+            columnDefs: columnDefs,
+            ajax: {
+                url: options.ajax_url,
+                dataSrc: ""
+            },
+            columns: options.columns || [],
+            select: options.select || select,
+            language: assetserver.language,
+            lengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]]
+        });
+      table.on('select', function(e, dt, type, indexes) {
+        var $node = table[ type ]( indexes ).nodes().to$();
+        $node.find('input.ipt_check').prop('checked', true);
+        assetserver.selected[$node.find('input.ipt_check').prop('id')] = true
+    }).on('deselect', function(e, dt, type, indexes) {
+        var $node = table[ type ]( indexes ).nodes().to$();
+        $node.find('input.ipt_check').prop('checked', false);
+        assetserver.selected[$node.find('input.ipt_check').prop('id')] = false
+    }).on('draw', function(){
+        $('#op').html(options.op_html || '');
+        $('#uc').html(options.uc_html || '');
+        $('[data-toggle="popover"]').popover({
+            html: true,
+            placement: 'bottom',
+            // trigger: 'hover',
+            container: 'body'
+        });
+    });
+    $('.ipt_check_all').on('click', function() {
+      if ($(this).prop("checked")) {
+          $(this).closest('table').find('.ipt_check').prop('checked', true);
+          assetserver.checked = true;
+          table.rows({search:'applied', page:'current'}).select();
+      } else {
+          $(this).closest('table').find('.ipt_check').prop('checked', false);
+          assetserver.checked = false;
+          table.rows({search:'applied', page:'current'}).deselect();
+      }
+    });
+    return table;
+}
 function setUrlParam(url, name, value) {
     var urlArray = url.split("?");
     if (urlArray.length===1){
@@ -179,4 +271,95 @@ function htmlEscape ( d ) {
     return typeof d === 'string' ?
         d.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') :
         d;
+}
+function APIUpdateAttr(props) {
+    // props = {url: .., body: , success: , error: , method: ,}
+    props = props || {};
+    var user_success_message = props.success_message;
+    var default_success_message = "更新成功";
+    var user_fail_message = props.fail_message;
+    var default_failed_message = "更新时发生未知错误";
+    var flash_message = props.flash_message || true;
+    if (props.flash_message === false){
+        flash_message = false;
+    }
+
+    $.ajax({
+        url: props.url,
+        type: props.method || "PATCH",
+        data: props.body,
+        contentType: props.content_type || "application/json; charset=utf-8",
+        dataType: props.data_type || "json"
+    }).done(function(data, textStatue, jqXHR) {
+        if (flash_message) {
+            var msg = "";
+            if (user_fail_message) {
+                msg = user_success_message;
+            } else {
+                msg = default_success_message;
+            }
+            toastr.success(msg);
+        }
+        if (typeof props.success === 'function') {
+            return props.success(data);
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        if (flash_message) {
+            var msg = "";
+            if (user_fail_message) {
+                msg = user_fail_message;
+            } else if (jqXHR.responseJSON) {
+                if (jqXHR.responseJSON.error) {
+                    msg = jqXHR.responseJSON.error
+                } else if (jqXHR.responseJSON.msg) {
+                    msg = jqXHR.responseJSON.msg
+                }
+            }
+            if (msg === "") {
+                msg = default_failed_message;
+            }
+            toastr.error(msg);
+        }
+        if (typeof props.error === 'function') {
+            console.log(jqXHR);
+            return props.error(jqXHR.responseText, jqXHR.status);
+        }
+    });
+  // return true;
+}
+// Sweet Alert for Delete
+function objectDelete(obj, name, url, redirectTo) {
+    function doDelete() {
+        var body = {};
+        var success = function() {
+            if (!redirectTo) {
+                $(obj).parent().parent().remove();
+            } else {
+                window.location.href=redirectTo;
+            }
+        };
+        var fail = function() {
+            swal("错误", "删除"+"[ "+name+" ]"+"遇到错误", "error");
+        };
+        APIUpdateAttr({
+            url: url,
+            body: JSON.stringify(body),
+            method: 'DELETE',
+            success_message: "删除成功",
+            success: success,
+            error: fail
+        });
+    }
+    swal({
+        title: "你确定要删除么 ？",
+        text: " [" + name + "] ",
+        type: "warning",
+        showCancelButton: true,
+        cancelButtonText: "取消",
+        confirmButtonColor: "#ed5565",
+        confirmButtonText: "确认",
+        closeOnConfirm: true,
+    }, function () {
+        doDelete()
+    });
 }
