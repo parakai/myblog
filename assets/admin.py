@@ -9,10 +9,16 @@ class AssetAdmin(admin.ModelAdmin):
                     'cpu_model', 'cpu_count', 'memory', 'disk_total', 'created_by']
 
 
-@admin.register(asset.UserProfileManager)
-class UserProfileAdmin(admin.ModelAdmin):
+@admin.register(asset.AssetUser)
+class AssetUserAdmin(admin.ModelAdmin):
     '''用户信息'''
-    list_display = ['asset', 'app', 'is_admin', 'username', 'password', ]
+    list_display = ['username', 'password', 'is_admin']
+
+
+@admin.register(asset.AppUser)
+class AppUserAdmin(admin.ModelAdmin):
+    '''用户信息'''
+    list_display = ['username', 'password', 'app', 'is_admin']
 
 
 @admin.register(asset.AppInfo)

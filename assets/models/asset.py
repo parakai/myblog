@@ -75,6 +75,7 @@ class Asset(models.Model):
     disk_total = models.CharField("Disk_total", max_length=100, null=True, blank=True)
 
     created_by = models.ForeignKey(User, verbose_name="创建人", on_delete=models.CASCADE)
+    assetuser = models.ManyToManyField('AssetUser', related_name='assets')
     created_time = models.DateTimeField("添加时间", auto_now_add=True)
     updated_time = models.DateTimeField("修改时间", auto_now=True)
     comment = models.TextField("备注", max_length=255, default='', blank=True)
@@ -104,15 +105,30 @@ class Asset(models.Model):
             return ''
 
 
-class UserProfileManager(models.Model):
+class AssetUser(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    asset = models.ForeignKey(Asset, verbose_name="资产", blank=True, null=True, on_delete=models.CASCADE)
-    app = models.ForeignKey(AppInfo, verbose_name="应用", blank=True, null=True, on_delete=models.CASCADE)
     is_admin = models.BooleanField("is_Admin", default=False)
     username = models.CharField("用户名", max_length=50)
     password = models.CharField("密码", max_length=50, null=True, blank=True)
 
     class Meta:
-        verbose_name = "用户信息管理"
+        verbose_name = "资产用户管理"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return '{0.username}({0.password})'.format(self)
+
+
+class AppUser(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    app = models.ForeignKey('AppInfo', verbose_name="应用", related_name='appusers', on_delete=models.CASCADE)
+    is_admin = models.BooleanField("is_Admin", default=False)
+    username = models.CharField("用户名", max_length=50)
+    password = models.CharField("密码", max_length=50, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "应用用户管理"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return '{0.username}({0.password})'.format(self)

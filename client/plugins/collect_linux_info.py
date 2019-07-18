@@ -7,6 +7,7 @@ import subprocess
 yum install redhat-lsb-core dmidecode hdparm net-tools -y
 '''
 
+
 def collect():
     filter_keys = ['Manufacturer', 'Serial Number', 'Product Name', 'UUID', 'Wake-up Type']
     raw_data = {}

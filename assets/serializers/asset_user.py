@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from ..models.asset import UserProfileManager
+from ..models.asset import AssetUser
 
 
 class AssetUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserProfileManager
-        fields = ['id', 'is_admin', 'username', 'password', 'asset_id']
+        model = AssetUser
+        fields = ['id', 'is_admin', 'username', 'password']

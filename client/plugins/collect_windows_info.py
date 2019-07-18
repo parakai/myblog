@@ -9,6 +9,13 @@ import wmi
 pip install wmi
 pip install pypiwin32
 或者下载安装包手动安装。
+------------
+按照打包exe工具
+https://sourceforge.net/projects/pywin32/files/pywin32/Build%20221/
+Installing collected packages: pywin32-ctypes, future, pefile, altgraph, pyinstaller
+Successfully installed altgraph-0.16.1 future-0.17.1 pefile-2019.4.18 pyinstaller-3.5 pywin32-ctypes-0.2.0
+--打包
+pyinstaller -F collect_windows_info.py
 """
 
 
@@ -23,7 +30,7 @@ class Win32Info(object):
     def collect(self):
         data = {
             'os_type': platform.system(),
-            'os_release': "%s %s %s " % (platform.release(), platform.architecture()[0], platform.version()),
+            # 'os_release': "%s %s %s " % (platform.release(), platform.architecture()[0], platform.version()),
             'os_distribution': 'Microsoft',
             'asset_type': 'server'
         }
@@ -87,6 +94,7 @@ class Win32Info(object):
         data['manufacturer'] = computer_info.Manufacturer
         data['model'] = computer_info.Model
         data['wake_up_type'] = computer_info.WakeUpType
+        data['os_release'] = "%s(%s %s)" % (system_info.Caption, platform.architecture()[0], platform.version())
         data['sn'] = system_info.SerialNumber
         # data['sn'] = self.wmi_obj.Win32_BaseBoard()[0].SerialNumber.strip()
         return data
@@ -125,15 +133,23 @@ class Win32Info(object):
         for nic in self.wmi_obj.Win32_NetworkAdapterConfiguration():
             if nic.MACAddress is not None:
                 nic_data = {}
+                if "WAN Miniport" in nic.Caption:
+                    continue
+                if "Microsoft Wi-Fi" in nic.Caption:
+                    continue
+                if "VMware Virtual Ethernet Adapter" in nic.Caption:
+                    continue
                 nic_data['mac'] = nic.MACAddress
                 nic_data['model'] = nic.Caption
                 nic_data['name'] = nic.Index
                 if nic.IPAddress is not None:
                     nic_data['ip_address'] = nic.IPAddress[0]
                     nic_data['net_mask'] = nic.IPSubnet
+                    nic_data['gateway'] = nic.DefaultIPGateway[0]
                 else:
                     nic_data['ip_address'] = ''
                     nic_data['net_mask'] = ''
+                    nic_data['gateway'] = ''
                 data.append(nic_data)
 
         return {'nic': data}

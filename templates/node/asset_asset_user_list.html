@@ -122,5 +122,11 @@ function initAssetUserTable() {
 $(document).ready(function () {
     initAssetUserTable();
 })
+.on('click', '.btn-update-asset-user-auth', function() {
+    username = $(this).data('username');
+    var hostname = "{{ asset.hostname }}";
+    initAssetUserAuthModalForm(hostname, username);
+    $("#asset_user_auth_modal").modal();
+})
 </script>
 {% endblock %}

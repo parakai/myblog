@@ -12,7 +12,7 @@ from rest_framework.pagination import PageNumberPagination, LimitOffsetPaginatio
 
 from .tree import TreeNodeSerializer
 from assets.models.node import Node
-from assets.models.asset import Asset, UserProfileManager
+from assets.models.asset import Asset, AssetUser
 from .serializers import node, asset, asset_user
 from .utils import get_object_or_none, create_success_msg, update_success_msg
 from . import forms
@@ -222,6 +222,6 @@ class AssetUserViewSet(viewsets.GenericViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        asset_id = self.request.GET.get('asset_id')
-        asset_user = UserProfileManager.objects.filter(asset=asset_id)
+        asset_id = self.request.query_params.get("asset_id")
+        asset_user = AssetUser.objects.filter(assets=asset_id)
         return asset_user
