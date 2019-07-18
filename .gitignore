@@ -1,0 +1,14 @@
+*.pyc
+*.pyo
+*.swp
+.env
+env
+env*
+venv
+.cache/
+.idea/
+db.sqlite3
+*.log
+*.bat
+tmp/*
+media
