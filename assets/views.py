@@ -5,7 +5,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
-from rest_framework import generics, mixins, viewsets
+from rest_framework import generics, mixins, viewsets, status
 from rest_framework.serializers import ValidationError
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
@@ -15,7 +15,7 @@ from assets.models.node import Node
 from assets.models.asset import Asset, AssetUser
 from .serializers import node, asset, asset_user
 from .utils import get_object_or_none, create_success_msg, update_success_msg
-from . import forms
+from .forms import AssetCreateForm, AssetUpdateForm, AssetUserUpdateForm
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -160,7 +160,7 @@ class AssetViewSet(viewsets.ModelViewSet):
 class AssetCreateView(SuccessMessageMixin, CreateView):
     model = Asset
     template_name = 'node/asset_create.html'
-    form_class = forms.AssetCreateForm
+    form_class = AssetCreateForm
     success_url = reverse_lazy('assets:assets-list')
 
     def get_form(self, form_class=None):
@@ -203,7 +203,7 @@ class AssetUserListView(DetailView):
 
 class AssetUpdateView(SuccessMessageMixin, UpdateView):
     model = Asset
-    form_class = forms.AssetCreateForm
+    form_class = AssetUpdateForm
     template_name = 'node/asset_update.html'
     success_url = reverse_lazy('assets:assets-list')
 
@@ -211,17 +211,25 @@ class AssetUpdateView(SuccessMessageMixin, UpdateView):
         return update_success_msg % ({"name": cleaned_data["hostname"]})
 
 
-class AssetUserViewSet(viewsets.GenericViewSet):
-    pagination_class = LimitOffsetPagination
-    serializer_class = asset_user.AssetUserSerializer
-    http_method_names = ['get', 'post']
+class AssetUserViewSet(viewsets.ModelViewSet):
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    queryset = AssetUser.objects.all()
+    serializer_class = asset_user.AssetUserSerializer
 
     def get_queryset(self):
         asset_id = self.request.query_params.get("asset_id")
-        asset_user = AssetUser.objects.filter(assets=asset_id)
-        return asset_user
+        queryset = AssetUser.objects.filter(assets=asset_id)
+        return queryset
+
+
+class AssetUserUpdateView(generics.UpdateAPIView):
+    queryset = AssetUser.objects.all()
+    serializer_class = asset_user.AssetUserSerializer
+    instance = None
+
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        password = request.data.get("password")
+        instance.password = password
+        instance.save()
+        return Response("OK")

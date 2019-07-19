@@ -20,5 +20,6 @@ urlpatterns = [
     path('asset/list/', views.AssetListView.as_view(), name='assets-list'),
     path('asset/<uuid:pk>/', views.AssetDetailView.as_view(), name='assets-detail'),
     path('asset/<uuid:pk>/update/', views.AssetUpdateView.as_view(), name='assets-update'),
-    path('asset/<uuid:pk>/asset-user/', views.AssetUserListView.as_view(), name='asset-user-list')
+    path('asset/<uuid:pk>/asset-user/', views.AssetUserListView.as_view(), name='asset-user-list'),
+    path('asset/asset-user/<uuid:pk>/update/', views.AssetUserUpdateView.as_view(), name='asset-user-update'),
 ]

@@ -93,10 +93,57 @@
         </div>
     </div>
 </div>
+<div aria-hidden="true" role="dialog" id="asset_user_auth_modal" class="modal inmodal">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close close_btn1" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">更新资产用户信息</h4>
+                <small>{% block modal_comment %}{% endblock %}</small>
+            </div>
+            {% block modal_help_message %}{% endblock %}
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" onkeydown="if(event.keyCode==13){ $('#btn_asset_user_auth_modal_confirm').trigger('click'); return false;}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">主机名</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="id_hostname_p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="id_username_p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">密码</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="id_password" type="password" name="password" placeholder="请输入密码"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button data-dismiss="modal" class="btn btn-white close_btn2" type="button">关闭</button>
+              <button class="btn btn-primary" type="button" id="btn_asset_user_auth_modal_confirm">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 {% block custom_js %}
     <script src="{% static 'js/asset.js' %}"></script>
 <script>
+var username, pk;
+function initAssetUserAuthModalForm(hostname){
+    $('#id_hostname_p').html(hostname);
+    $('#id_username_p').html(username);
+    $('#id_password').parent().removeClass('has-error');
+    $('#id_password').val('');
+}
 function initAssetUserTable() {
     var options = {
         ele: $('#asset_user_list'),
@@ -111,7 +158,7 @@ function initAssetUserTable() {
         ],
         ajax_url: '{% url "assets:asset-user-api-list" %}' + '?asset_id={{ asset.id }}',
         columns: [
-            {data: function (){return ''}}, {data: "username" },
+            {data: "id", orderable: false}, {data: "username" },
             {data: "password"}, {data: "is_admin"},
             {data: "username", orderable: false}
         ],
@@ -124,9 +171,35 @@ $(document).ready(function () {
 })
 .on('click', '.btn-update-asset-user-auth', function() {
     username = $(this).data('username');
+    console.log($(this).data('uid'))
+    pk = $(this).closest("tr").find(":nth-child(1)").children('input').attr('id');
     var hostname = "{{ asset.hostname }}";
-    initAssetUserAuthModalForm(hostname, username);
+    initAssetUserAuthModalForm(hostname, username, pk);
     $("#asset_user_auth_modal").modal();
+})
+.on('click', '#btn_asset_user_auth_modal_confirm', function(){
+    var password = $('#id_password').val();
+    var url = "{% url 'assets:asset-user-update' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", pk);
+    if (password){
+        var data = {
+            'password': password
+        };
+        formSubmit({
+            data: data,
+            url: url,
+            method: 'PUT',
+            success: function () {
+                toastr.success("更新成功！");
+            },
+            error: function () {
+                toastr.error("更新失败！");
+            }
+        });
+        $("#asset_user_auth_modal").modal('hide');
+    }
+    else{
+        $('#id_password').parent().addClass('has-error');
+    }
 })
 </script>
 {% endblock %}
