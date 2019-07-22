@@ -110,6 +110,8 @@ class AssetUser(models.Model):
     is_admin = models.BooleanField("is_Admin", default=False)
     username = models.CharField("用户名", max_length=50)
     password = models.CharField("密码", max_length=50, null=True, blank=True)
+    created_time = models.DateTimeField("添加时间", auto_now_add=True)
+    updated_time = models.DateTimeField("修改时间", auto_now=True)
 
     class Meta:
         verbose_name = "资产用户管理"
@@ -125,6 +127,8 @@ class AppUser(models.Model):
     is_admin = models.BooleanField("is_Admin", default=False)
     username = models.CharField("用户名", max_length=50)
     password = models.CharField("密码", max_length=50, null=True, blank=True)
+    created_time = models.DateTimeField("添加时间", auto_now_add=True)
+    updated_time = models.DateTimeField("修改时间", auto_now=True)
 
     class Meta:
         verbose_name = "应用用户管理"

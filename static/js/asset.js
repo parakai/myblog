@@ -223,15 +223,6 @@ assetserver.initDataTable = function (options) {
         var $node = table[ type ]( indexes ).nodes().to$();
         $node.find('input.ipt_check').prop('checked', false);
         assetserver.selected[$node.find('input.ipt_check').prop('id')] = false
-    }).on('draw', function(){
-        $('#op').html(options.op_html || '');
-        $('#uc').html(options.uc_html || '');
-        $('[data-toggle="popover"]').popover({
-            html: true,
-            placement: 'bottom',
-            // trigger: 'hover',
-            container: 'body'
-        });
     });
     $('.ipt_check_all').on('click', function() {
       if ($(this).prop("checked")) {

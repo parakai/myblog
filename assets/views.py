@@ -5,6 +5,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Q
 from rest_framework import generics, mixins, viewsets, status
 from rest_framework.serializers import ValidationError
 from rest_framework.response import Response
@@ -187,7 +188,8 @@ class AssetDetailView(DetailView):
     template_name = 'node/asset_detail.html'
 
     def get_context_data(self, **kwargs):
-        nodes_remain = Node.objects.exclude(assets=self.object)
+        nodes_remain = Node.objects.exclude(
+            Q(assets=self.object))
         context = {
             'nodes_remain': nodes_remain,
         }
@@ -211,10 +213,23 @@ class AssetUpdateView(SuccessMessageMixin, UpdateView):
         return update_success_msg % ({"name": cleaned_data["hostname"]})
 
 
-class AssetUserViewSet(viewsets.ModelViewSet):
-
+class AssetUserViewSet(viewsets.GenericViewSet):
+    pagination_class = LimitOffsetPagination
     queryset = AssetUser.objects.all()
     serializer_class = asset_user.AssetUserSerializer
+    http_method_names = ['get', 'post']
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        print(self.request.data.get("asset"))
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def get_queryset(self):
         asset_id = self.request.query_params.get("asset_id")

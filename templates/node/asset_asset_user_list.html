@@ -46,6 +46,7 @@
                                                     <th class="text-center">用户名</th>
                                                     <th class="text-center">密码</th>
                                                     <th class="text-center">is_Admin</th>
+                                                    <th class="text-center">更新日期</th>
                                                     <th class="text-center">动作</th>
                                                 </tr>
                                             </thead>
@@ -135,9 +136,8 @@
 
 {% endblock %}
 {% block custom_js %}
-    <script src="{% static 'js/asset.js' %}"></script>
 <script>
-var username, pk;
+var assetuser_table, username, pk;
 function initAssetUserAuthModalForm(hostname){
     $('#id_hostname_p').html(hostname);
     $('#id_username_p').html(username);
@@ -150,21 +150,23 @@ function initAssetUserTable() {
         buttons: [],
         order: [],
         columnDefs: [
-            {targets: 4, createdCell: function (td, cellData) {
+            {targets: 5, createdCell: function (td, cellData) {
                 var update_auth_btn = ' <a class="btn btn-xs btn-primary btn-update-asset-user-auth" data-username="DEFAULT_USERNAME">更新密码</a>'.replace("DEFAULT_USERNAME", cellData);
                 $(td).html(update_auth_btn);
 
             }}
         ],
         ajax_url: '{% url "assets:asset-user-api-list" %}' + '?asset_id={{ asset.id }}',
+        {#ajax_url: '{% url "assets:asset-user-api-list" %}' + '?asset_id={{ asset.id }}',#}
         columns: [
             {data: "id", orderable: false}, {data: "username" },
-            {data: "password"}, {data: "is_admin"},
+            {data: "password"}, {data: "is_admin"},{data: "updated_time"},
             {data: "username", orderable: false}
         ],
         op_html: $('#actions').html()
     };
-    assetserver.initDataTable(options);
+    assetuser_table = assetserver.initDataTable(options);
+    return assetuser_table;
 }
 $(document).ready(function () {
     initAssetUserTable();
@@ -179,17 +181,20 @@ $(document).ready(function () {
 })
 .on('click', '#btn_asset_user_auth_modal_confirm', function(){
     var password = $('#id_password').val();
-    var url = "{% url 'assets:asset-user-update' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", pk);
+    var url = "{% url 'assets:asset-user-api-list' %}";
     if (password){
         var data = {
+            'asset': "{{ asset.id }}",
+            'username': username,
             'password': password
         };
         formSubmit({
             data: data,
             url: url,
-            method: 'PUT',
+            method: 'POST',
             success: function () {
                 toastr.success("更新成功！");
+                assetuser_table.ajax.reload();
             },
             error: function () {
                 toastr.error("更新失败！");

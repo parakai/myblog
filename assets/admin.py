@@ -12,13 +12,13 @@ class AssetAdmin(admin.ModelAdmin):
 @admin.register(asset.AssetUser)
 class AssetUserAdmin(admin.ModelAdmin):
     '''用户信息'''
-    list_display = ['username', 'password', 'is_admin']
+    list_display = ['username', 'password', 'is_admin', 'updated_time']
 
 
 @admin.register(asset.AppUser)
 class AppUserAdmin(admin.ModelAdmin):
     '''用户信息'''
-    list_display = ['username', 'password', 'app', 'is_admin']
+    list_display = ['username', 'password', 'app', 'is_admin', 'updated_time']
 
 
 @admin.register(asset.AppInfo)
