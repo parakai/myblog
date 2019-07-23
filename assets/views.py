@@ -213,17 +213,26 @@ class AssetUpdateView(SuccessMessageMixin, UpdateView):
         return update_success_msg % ({"name": cleaned_data["hostname"]})
 
 
-class AssetUserViewSet(viewsets.GenericViewSet):
+class AssetUserViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
     queryset = AssetUser.objects.all()
     serializer_class = asset_user.AssetUserSerializer
-    http_method_names = ['get', 'post']
+    # http_method_names = ['get', 'post']
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        print(self.request.data.get("asset"))
+        # Asset.objects.get(id=asset_id).assetuser.clear()
+        assetuser_oldid = request.data.get('pk')
+        asset_id = request.data.get('asset')
+        assetuser = AssetUser.objects.get(id=assetuser_oldid)
+        # 移除assetuser
+        Asset.objects.get(id=asset_id).assetuser.remove(assetuser)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        assetuser_newid = serializer.data.get('id')
+        assetuser2 = AssetUser.objects.get(id=assetuser_newid)
+        # 添加新元素对应关系
+        Asset.objects.get(id=asset_id).assetuser.add(assetuser2)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):
@@ -233,18 +242,8 @@ class AssetUserViewSet(viewsets.GenericViewSet):
 
     def get_queryset(self):
         asset_id = self.request.query_params.get("asset_id")
-        queryset = AssetUser.objects.filter(assets=asset_id)
+        if asset_id:
+            queryset = AssetUser.objects.filter(assets=asset_id)
+        else:
+            queryset = self.queryset
         return queryset
-
-
-class AssetUserUpdateView(generics.UpdateAPIView):
-    queryset = AssetUser.objects.all()
-    serializer_class = asset_user.AssetUserSerializer
-    instance = None
-
-    def put(self, request, *args, **kwargs):
-        instance = self.get_object()
-        password = request.data.get("password")
-        instance.password = password
-        instance.save()
-        return Response("OK")

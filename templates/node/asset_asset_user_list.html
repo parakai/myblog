@@ -137,7 +137,7 @@
 {% endblock %}
 {% block custom_js %}
 <script>
-var assetuser_table, username, pk;
+var assetuser_table, username, pk, is_admin;
 function initAssetUserAuthModalForm(hostname){
     $('#id_hostname_p').html(hostname);
     $('#id_username_p').html(username);
@@ -151,8 +151,9 @@ function initAssetUserTable() {
         order: [],
         columnDefs: [
             {targets: 5, createdCell: function (td, cellData) {
-                var update_auth_btn = ' <a class="btn btn-xs btn-primary btn-update-asset-user-auth" data-username="DEFAULT_USERNAME">更新密码</a>'.replace("DEFAULT_USERNAME", cellData);
-                $(td).html(update_auth_btn);
+                var update_btn = ' <a class="btn btn-xs btn-primary btn-update-asset-user-auth" data-username="DEFAULT_USERNAME">更新密码</a>'.replace("DEFAULT_USERNAME", cellData);
+                var del_btn = '<a class="btn btn-xs btn-danger m-l-xs btn_asset_delete" data-uid="{{ DEFAULT_PK }}">删除</a>'.replace('{{ DEFAULT_PK }}', cellData);
+                $(td).html(update_btn + del_btn);
 
             }}
         ],
@@ -161,7 +162,7 @@ function initAssetUserTable() {
         columns: [
             {data: "id", orderable: false}, {data: "username" },
             {data: "password"}, {data: "is_admin"},{data: "updated_time"},
-            {data: "username", orderable: false}
+            {data: "id", orderable: false}
         ],
         op_html: $('#actions').html()
     };
@@ -172,21 +173,37 @@ $(document).ready(function () {
     initAssetUserTable();
 })
 .on('click', '.btn-update-asset-user-auth', function() {
-    username = $(this).data('username');
-    console.log($(this).data('uid'))
+    {#username = $(this).data('username');#}
+    username = $(this).closest("tr").find(":nth-child(2)").html();
     pk = $(this).closest("tr").find(":nth-child(1)").children('input').attr('id');
+    is_admin = $(this).closest("tr").find(":nth-child(4)").html();
+    console.log(is_admin);
     var hostname = "{{ asset.hostname }}";
     initAssetUserAuthModalForm(hostname, username, pk);
     $("#asset_user_auth_modal").modal();
 })
+.on('click', '.btn_asset_delete', function () {
+    var $this = $(this);
+    var $data_table = $("#asset_user_list").DataTable();
+    var name = $(this).closest("tr").find(":nth-child(2)").html();
+    var uid = $this.data('uid');
+    var the_url = '{% url "assets:asset-user-api-detail" pk=DEFAULT_PK %}'.replace("{{ DEFAULT_PK }}", uid);
+    objectDelete($this, name, the_url);
+    setTimeout( function () {
+        $data_table.ajax.reload();
+    }, 3000);
+})
 .on('click', '#btn_asset_user_auth_modal_confirm', function(){
     var password = $('#id_password').val();
-    var url = "{% url 'assets:asset-user-api-list' %}";
+    {#var url = "{% url 'assets:asset-user-update' pk=DEFAULT_PK%}".replace("{{ DEFAULT_PK }}", pk);#}
+    var url = "{% url 'assets:asset-user-api-list'%}";
     if (password){
         var data = {
+            'pk': pk,
             'asset': "{{ asset.id }}",
             'username': username,
-            'password': password
+            'password': password,
+            'is_admin': is_admin
         };
         formSubmit({
             data: data,

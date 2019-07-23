@@ -116,6 +116,7 @@ class AssetUser(models.Model):
     class Meta:
         verbose_name = "资产用户管理"
         verbose_name_plural = verbose_name
+        unique_together = ('username', 'password')
 
     def __str__(self):
         return '{0.username}({0.password})'.format(self)
