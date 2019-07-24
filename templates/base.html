@@ -64,15 +64,13 @@
             </div>
         </div>
     </div>
+    {% block content %}{% endblock %}
     <script>
         $(document).ready(function () {
             setAjaxCSRFToken();
         })
     </script>
     <script src="{% static 'js/asset.js' %}"></script>
-    {% block content %}{% endblock %}
-{#    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>#}
-{#    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>#}
     {% block custom_js %}{% endblock %}
 </body>
 </html>

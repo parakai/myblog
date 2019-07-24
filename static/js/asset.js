@@ -71,7 +71,7 @@ assetserver.language = {
         }
     },
     lengthMenu: "每页 _MENU_",
-    info: "显示第 _START_ 至 _END_ 项结果; 共 _TOTAL_ 项",
+    info: "显示 第 _START_ 至 _END_ 项 结果; 共 _TOTAL_ 项",
     infoFiltered: "",
     infoEmpty: "",
     zeroRecords: "没有匹配项",

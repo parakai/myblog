@@ -25,23 +25,6 @@
 {% endblock %}
 {% block content %}
 <div id="wrapper">
-{#    <div class="navbar-default sidebar" role="navigation">#}
-{#        <div class="sidebar-nav navbar-collapse">#}
-{#            <ul class="nav" id="side-menu">#}
-{#                <li id="assets" class="active">#}
-{#                    <a>#}
-{#                        <i class="fa fa-inbox" style="width: 14px"></i> <span class="nav-label">资产管理</span><span class="fa arrow"></span>#}
-{#                    </a>#}
-{#                    <ul class="nav nav-second-level">#}
-{#                        <li id="asset"><a href="{% url 'assets:assets-list' %}">资产列表</a></li>#}
-{#                        <li id="domain"><a href="">网域列表</a></li>#}
-{#                        <li id="admin-user"><a href="">管理用户</a></li>#}
-{#                        <li id="system-user"><a href="">系统用户</a></li>#}
-{#                    </ul>#}
-{#                </li>#}
-{#            </ul>#}
-{#        </div>#}
-{#    </div>#}
     <div id="page-wrapper" class="gray-bg">
     <div class="wrapper wrapper-content">
        <div class="row">
@@ -109,8 +92,6 @@
 {% endblock %}
 {% block custom_js %}
     <script src="{% static 'zTree/js/jquery.ztree.all.min.js' %}"></script>
-    <script src="{% static 'js/jquery.dataTables.js' %}"></script>
-    <script src="{% static 'js/dataTables.bootstrap.js' %}"></script>
     <script type="text/javascript">
     var asset_table, rMenu, show = 0;
     var current_node_id = null;

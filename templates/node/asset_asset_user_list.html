@@ -39,6 +39,7 @@
                                         </div>
                                     </div>
                                     <div class="ibox-content">
+                                    <div class="uc pull-left m-r-5"><a class="btn btn-sm btn-primary btn-add-assetuser">添加用户</a></div>
                                         <table class="table table-hover" id="asset_user_list">
                                             <thead>
                                                 <tr>
@@ -133,6 +134,35 @@
         </div>
     </div>
 </div>
+<div aria-hidden="true" role="dialog" id="asset_user_add_modal" class="modal inmodal">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close close_btn1" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">添加资产用户信息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" onkeydown="if(event.keyCode==13){ $('#btn_asset_user_add_modal_confirm').trigger('click'); return false;}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">用户信息</label>
+                        <div class="col-sm-8">
+                            <select name="assetuser" required id="id_assetuser" multiple>
+                                {% for assetuser in assetuser_remain %}
+                                <option value="{{ assetuser.id }}">{{ assetuser }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button data-dismiss="modal" class="btn btn-white close_btn2" type="button">关闭</button>
+              <button class="btn btn-primary" type="button" id="btn_asset_user_add_modal_confirm">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 {% block custom_js %}
@@ -182,6 +212,9 @@ $(document).ready(function () {
     initAssetUserAuthModalForm(hostname, username, pk);
     $("#asset_user_auth_modal").modal();
 })
+.on('click', '.btn-add-assetuser', function () {
+    $("#asset_user_add_modal").modal();
+})
 .on('click', '.btn_asset_delete', function () {
     var $this = $(this);
     var $data_table = $("#asset_user_list").DataTable();
@@ -192,6 +225,26 @@ $(document).ready(function () {
     setTimeout( function () {
         $data_table.ajax.reload();
     }, 3000);
+})
+.on('click', '#btn_asset_user_add_modal_confirm' ,function () {
+    var val = $('#id_assetuser').val();
+    if (val === null){
+        sweetAlert( "Oops" ,"请选择要添加的用户信息！", "error");
+        return;
+    }
+    var url = "{% url 'assets:asset-user-update' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", '{{ asset.pk }}');
+    var data = {"assetuserIds": val};
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: JSON.stringify(data),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function () {
+            toastr.success("添加成功！");
+            assetuser_table.ajax.reload();
+        }
+})
 })
 .on('click', '#btn_asset_user_auth_modal_confirm', function(){
     var password = $('#id_password').val();

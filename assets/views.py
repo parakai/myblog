@@ -202,6 +202,14 @@ class AssetUserListView(DetailView):
     context_object_name = 'asset'
     template_name = 'node/asset_asset_user_list.html'
 
+    def get_context_data(self, **kwargs):
+        assetuser_remain = AssetUser.objects.exclude(assets=self.object)
+        context = {
+            'assetuser_remain': assetuser_remain,
+        }
+        kwargs.update(context)
+        return super().get_context_data(**kwargs)
+
 
 class AssetUpdateView(SuccessMessageMixin, UpdateView):
     model = Asset
@@ -247,3 +255,18 @@ class AssetUserViewSet(viewsets.ModelViewSet):
         else:
             queryset = self.queryset
         return queryset
+
+
+class AssetUserAddView(generics.CreateAPIView):
+
+    def post(self, request, *args, **kwargs):
+        assetuserIds = self.request.data.get("assetuserIds")
+        pk = self.kwargs.get('pk')
+        asset = get_object_or_404(Asset, pk=pk)
+        for userid in assetuserIds:
+            asset_user = AssetUser.objects.get(id=userid)
+            asset.assetuser.add(asset_user)
+        return Response("OK")
+
+
+
