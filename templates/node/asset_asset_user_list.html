@@ -145,12 +145,12 @@
                 <form class="form-horizontal" role="form" onkeydown="if(event.keyCode==13){ $('#btn_asset_user_add_modal_confirm').trigger('click'); return false;}">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">用户信息</label>
+                        <label class="col-sm-4 control-label">用户信息：</label>
                         <div class="col-sm-8">
                             <select name="assetuser" required id="id_assetuser" multiple>
-                                {% for assetuser in assetuser_remain %}
-                                <option value="{{ assetuser.id }}">{{ assetuser }}</option>
-                                {% endfor %}
+{#                                {% for assetuser in assetuser_remain %}#}
+{#                                <option value="{{ assetuser.id }}">{{ assetuser }}</option>#}
+{#                                {% endfor %}#}
                             </select>
                         </div>
                     </div>
@@ -180,6 +180,9 @@ function initAssetUserTable() {
         buttons: [],
         order: [],
         columnDefs: [
+            {targets: 4, createdCell: function (td, cellData) {
+                $(td).html(cellData.slice(0, -6));
+            }},
             {targets: 5, createdCell: function (td, cellData) {
                 var update_btn = ' <a class="btn btn-xs btn-primary btn-update-asset-user-auth" data-username="DEFAULT_USERNAME">更新密码</a>'.replace("DEFAULT_USERNAME", cellData);
                 var del_btn = '<a class="btn btn-xs btn-danger m-l-xs btn_asset_delete" data-uid="{{ DEFAULT_PK }}">删除</a>'.replace('{{ DEFAULT_PK }}', cellData);
@@ -214,17 +217,43 @@ $(document).ready(function () {
 })
 .on('click', '.btn-add-assetuser', function () {
     $("#asset_user_add_modal").modal();
+    {#$("#id_assetuser").val("");#}
+    var url = "{% url 'assets:asset-user-remainlist' pk=DEFAULT_PK %}".replace("{{ DEFAULT_PK }}", '{{ asset.pk }}');
+    $.ajax({
+        url: url,
+        type: "GET",
+        success: function (data) {
+            $("#id_assetuser").empty();
+            {#var select_html = "";#}
+            for( var i = 0; i < data.length; i++){
+                var html = "<option value="+ data[i].id + ">" + data[i].username+ "(" + data[i].password + ")"+ "</option>";
+                $("#id_assetuser").append(html);
+            }
+        }
+    })
 })
 .on('click', '.btn_asset_delete', function () {
-    var $this = $(this);
     var $data_table = $("#asset_user_list").DataTable();
-    var name = $(this).closest("tr").find(":nth-child(2)").html();
-    var uid = $this.data('uid');
-    var the_url = '{% url "assets:asset-user-api-detail" pk=DEFAULT_PK %}'.replace("{{ DEFAULT_PK }}", uid);
-    objectDelete($this, name, the_url);
-    setTimeout( function () {
-        $data_table.ajax.reload();
-    }, 3000);
+    var uid = $(this).data('uid');
+    var url = '{% url "assets:asset-user-delete" pk=DEFAULT_PK %}'.replace("{{ DEFAULT_PK }}", '{{ asset.pk }}');
+    var data = {"assetuserId": uid};
+    if(confirm("你确定删除吗？")){
+        $.ajax({
+            url: url,
+            type: "DELETE",
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function () {
+                toastr.success("删除成功！");
+                    setTimeout( function () {
+                        $data_table.ajax.reload();
+                    }, 1000);
+            }
+        });
+        return false;
+    }
+
 })
 .on('click', '#btn_asset_user_add_modal_confirm' ,function () {
     var val = $('#id_assetuser').val();
@@ -243,8 +272,9 @@ $(document).ready(function () {
         success: function () {
             toastr.success("添加成功！");
             assetuser_table.ajax.reload();
-        }
-})
+        },
+    });
+    $("#asset_user_add_modal").modal('hide');
 })
 .on('click', '#btn_asset_user_auth_modal_confirm', function(){
     var password = $('#id_password').val();

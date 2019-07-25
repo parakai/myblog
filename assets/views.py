@@ -133,9 +133,9 @@ class AssetViewSet(viewsets.ModelViewSet):
 
     filter_fields = ('assettype',)
     # 搜索,=name表示精确搜索，也可以使用各种正则表达式
-    search_fields = ('name', 'ip', 'model')
+    search_fields = ('hostname', 'ip', 'model', 'platform')
 
-    ordering_fields = ('name', 'ip', 'model',)
+    ordering_fields = ('hostname', 'ip', 'model',)
 
     def filter_node(self, queryset):
         node_id = self.request.query_params.get("node_id")
@@ -202,13 +202,13 @@ class AssetUserListView(DetailView):
     context_object_name = 'asset'
     template_name = 'node/asset_asset_user_list.html'
 
-    def get_context_data(self, **kwargs):
-        assetuser_remain = AssetUser.objects.exclude(assets=self.object)
-        context = {
-            'assetuser_remain': assetuser_remain,
-        }
-        kwargs.update(context)
-        return super().get_context_data(**kwargs)
+    # def get_context_data(self, **kwargs):
+    #     assetuser_remain = AssetUser.objects.exclude(assets=self.object)
+    #     context = {
+    #         'assetuser_remain': assetuser_remain,
+    #     }
+    #     kwargs.update(context)
+    #     return super().get_context_data(**kwargs)
 
 
 class AssetUpdateView(SuccessMessageMixin, UpdateView):
@@ -266,7 +266,33 @@ class AssetUserAddView(generics.CreateAPIView):
         for userid in assetuserIds:
             asset_user = AssetUser.objects.get(id=userid)
             asset.assetuser.add(asset_user)
-        return Response("OK")
+        return Response("OK", status=status.HTTP_201_CREATED)
+
+
+class AssetUserListRemainView(generics.ListAPIView):
+    serializer_class = asset_user.AssetUserSerializer
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk') or self.request.query_params.get('id')
+        asset = get_object_or_404(Asset, pk=pk)
+        assetuser = AssetUser.objects.exclude(assets=asset)
+        return assetuser
+
+
+class AssetUserDeleteView(generics.DestroyAPIView):
+
+    def delete(self, request, *args, **kwargs):
+        assetuserId = self.request.data.get("assetuserId")
+        pk = self.kwargs.get('pk')
+        asset = get_object_or_404(Asset, pk=pk)
+        asset_user = AssetUser.objects.get(id=assetuserId)
+        asset.assetuser.remove(asset_user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 

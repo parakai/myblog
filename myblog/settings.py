@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'comment',
     'uploadfile',
     'rest_framework',  # 配置 rest_framework app
+    'django_filters',
     'assets',
     'bootstrap3',
 ]
@@ -122,12 +123,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ),
+    # 分页
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'ORDERING_PARAM': "order",
+    'SEARCH_PARAM': "search",
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S %z',
+    'DATETIME_INPUT_FORMATS': ['%Y-%m-%d %H:%M:%S %z'],
+    # 每页显示的个数
+    # 'PAGE_SIZE': 10,
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-# LANGUAGE_CODE = 'zh-hans'
-LANGUAGE_CODE = 'zh'
+LANGUAGE_CODE = 'zh-hans'
 
 TIME_ZONE = 'Asia/Shanghai'
 
